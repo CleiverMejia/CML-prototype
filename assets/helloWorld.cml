@@ -1,0 +1,11 @@
+numeros = 12;
+strings = "hola";
+
+print("Hola Mundo!");
+print((((((((2+2))))))));
+
+if(numeros == 2) {
+    print("tu numero es el 12!");
+}
+
+print("Esto se va a repetir 2 veces " * 2);

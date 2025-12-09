@@ -1,0 +1,12 @@
+package enums;
+
+public enum TokenType {
+    NUMBER, STRING,
+    LPARENT, RPARENT,
+    LBRACE, RBRACE,
+    SEMICOLON, ASSIGN,
+    PLUS, MINUS, MUL, DIV,
+    IDENT,
+    PRINT, IF, ELSE,
+    GREATER, LESS, EQUAL, GREATEREQUAL, LESSEQUAL,
+}
