@@ -33,6 +33,6 @@ public class PrintStmt implements Stmt {
 
     @Override
     public String toString() {
-        return expr.get().toString();
+        return getText() + "";
     }
 }

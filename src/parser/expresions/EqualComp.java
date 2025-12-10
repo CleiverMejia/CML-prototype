@@ -1,7 +1,6 @@
 package parser.expresions;
 
 import interpreter.Interpreter;
-import java.util.Objects;
 import parser.interfaces.Comp;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
@@ -35,20 +34,20 @@ public class EqualComp implements Comp {
         }
 
         // Number or String
-        Integer leftNumber = (left instanceof NumberExpr lNum) ? lNum.value : null;
+        NumberExpr leftNumber = (left instanceof NumberExpr lNum) ? lNum : null;
         String leftString = (left instanceof StringExpr lStr) ? lStr.text : null;
 
-        Integer rightNumber = (right instanceof NumberExpr rNum) ? rNum.value : null;
+        NumberExpr rightNumber = (right instanceof NumberExpr rNum) ? rNum : null;
         String rightString = (right instanceof StringExpr rStr) ? rStr.text : null;
 
         if (leftNumber != null && rightNumber != null) {
-            return new BoolExpr(Objects.equals(leftNumber, rightNumber));
+            return new BoolExpr(leftNumber.value == rightNumber.value);
         }
         if (leftNumber != null && rightString != null) {
-            return new BoolExpr(Objects.equals(leftNumber, Integer.valueOf(rightString)));
+            return new BoolExpr(leftNumber.value == Integer.parseInt(rightString));
         }
         if (leftString != null && rightNumber != null) {
-            return new BoolExpr(Objects.equals(Integer.valueOf(leftString), rightNumber));
+            return new BoolExpr(Integer.parseInt(leftString) == rightNumber.value);
         }
         if (leftString != null && rightString != null) {
             return new BoolExpr(leftString.equals(rightString));

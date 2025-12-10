@@ -33,10 +33,6 @@ public class Parser {
         return mainBlock.getStmt();
     }
 
-    private Token peek() {
-        return tokens.get(pos);
-    }
-
     public void run() {
         mainBlock = getBlock();
     }
@@ -45,7 +41,7 @@ public class Parser {
         Block block = new Block();
 
         while (pos < tokens.size()) {
-            Token token = peek();
+            Token token = tokens.get(pos);
 
             switch (token.type) {
                 case RBRACE -> {
@@ -95,14 +91,17 @@ public class Parser {
                 continue;
             }
 
-            if (tokenType == TokenType.SEMICOLON || tokenType == TokenType.RPARENT) {
+            if (tokenType == TokenType.SEMICOLON
+                    || tokenType == TokenType.RPARENT
+                    || tokenType == TokenType.LBRACE) {
                 break;
             }
 
             if (tokenType != TokenType.PLUS
                     && tokenType != TokenType.MINUS
                     && tokenType != TokenType.MUL
-                    && tokenType != TokenType.DIV) {
+                    && tokenType != TokenType.DIV
+                    && tokenType != TokenType.EQUAL) {
                 Expr dataType = getDataType(tokenValue);
                 expr = dataType;
                 continue;
@@ -125,6 +124,9 @@ public class Parser {
                     expr = new MulExpr(expr, rightExpr);
                 case DIV ->
                     expr = new DivExpr(expr, rightExpr);
+                case EQUAL -> {
+                    expr = new EqualComp(expr, rightExpr);
+                }
                 default -> {
                 }
             }
@@ -148,33 +150,8 @@ public class Parser {
     }
 
     public IfStmt ifL() {
-        Comp condition = null;
-        Block body = null;
-
-        pos++;
-        while (pos < tokens.size() && tokens.get(pos).type != TokenType.RBRACE) {
-            Token token = peek();
-
-            switch (token.type) {
-                case EQUAL -> {
-                    Token tokenVal1 = tokens.get(pos - 1);
-                    Token tokenVal2 = tokens.get(++pos);
-
-                    Expr dataType1 = getDataType(tokenVal1);
-                    Expr dataType2 = getDataType(tokenVal2);
-
-                    condition = new EqualComp(dataType1, dataType2);
-                }
-                case LBRACE -> {
-                    body = getBlock();
-                    pos--;
-                }
-                default -> {
-                }
-            }
-
-            pos++;
-        }
+        Comp condition = (Comp) getExpr();
+        Block body = getBlock();
 
         return new IfStmt(condition, body);
     }

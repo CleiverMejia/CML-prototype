@@ -1,11 +1,5 @@
-numeros = 12;
-strings = "hola";
+nombre = "cleiver";
 
-print("Hola Mundo!");
-print((((((((2+2))))))));
-
-if(numeros == 2) {
-    print("tu numero es el 12!");
+if(nombre == "cleiver") {
+    print("Hola " + nombre);
 }
-
-print("Esto se va a repetir 2 veces " * 2);
