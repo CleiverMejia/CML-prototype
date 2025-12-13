@@ -1,5 +1,6 @@
-nombre = "cleiver";
+Nombre1 = "admin"; // esto es un comentario
+edad_1 = 18;
 
-if(nombre == "cleiver") {
-    print("Hola " + nombre);
+if((edad_1 >= 18) && (Nombre1 == "admin")) {
+    print("Hola " + Nombre1 + " eres mayor de edad!");
 }

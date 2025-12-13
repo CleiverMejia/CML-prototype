@@ -4,8 +4,14 @@ import enums.TokenType;
 import java.util.ArrayList;
 import java.util.List;
 import lexer.Token;
+import parser.expresions.AndComp;
+import parser.expresions.BoolExpr;
 import parser.expresions.DivExpr;
 import parser.expresions.EqualComp;
+import parser.expresions.GreaterComp;
+import parser.expresions.GreaterEqualComp;
+import parser.expresions.LessComp;
+import parser.expresions.LessEqualComp;
 import parser.expresions.MinusExpr;
 import parser.expresions.MulExpr;
 import parser.expresions.NumberExpr;
@@ -72,6 +78,10 @@ public class Parser {
             return new StringExpr(tokenValue.string);
         }
 
+        if (tokenValue.type == TokenType.BOOL) {
+            return new BoolExpr(tokenValue.string.equals("true"));
+        }
+
         if (tokenValue.type == TokenType.IDENT) {
             return new VarExpr(tokenValue.string);
         }
@@ -101,7 +111,14 @@ public class Parser {
                     && tokenType != TokenType.MINUS
                     && tokenType != TokenType.MUL
                     && tokenType != TokenType.DIV
-                    && tokenType != TokenType.EQUAL) {
+                    && tokenType != TokenType.EQUAL
+                    && tokenType != TokenType.GREATER
+                    && tokenType != TokenType.LESS
+                    && tokenType != TokenType.GREATEREQUAL
+                    && tokenType != TokenType.LESSEQUAL
+                    && tokenType != TokenType.AND
+                    && tokenType != TokenType.OR
+                    && tokenType != TokenType.NOT) {
                 Expr dataType = getDataType(tokenValue);
                 expr = dataType;
                 continue;
@@ -124,9 +141,18 @@ public class Parser {
                     expr = new MulExpr(expr, rightExpr);
                 case DIV ->
                     expr = new DivExpr(expr, rightExpr);
-                case EQUAL -> {
+                case EQUAL ->
                     expr = new EqualComp(expr, rightExpr);
-                }
+                case GREATER ->
+                    expr = new GreaterComp(expr, rightExpr);
+                case LESS ->
+                    expr = new LessComp(expr, rightExpr);
+                case GREATEREQUAL ->
+                    expr = new GreaterEqualComp(expr, rightExpr);
+                case LESSEQUAL ->
+                    expr = new LessEqualComp(expr, rightExpr);
+                case AND ->
+                    expr = new AndComp(expr, rightExpr);
                 default -> {
                 }
             }

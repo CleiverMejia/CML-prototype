@@ -5,12 +5,12 @@ import parser.interfaces.Comp;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
 
-public class MulExpr implements Oper {
+public class OrComp implements Comp {
 
-    private Expr left;
-    private Expr right;
+    public Expr left;
+    public Expr right;
 
-    public MulExpr(Expr left, Expr right) {
+    public OrComp(Expr left, Expr right) {
         this.left = left;
         this.right = right;
     }
@@ -19,10 +19,10 @@ public class MulExpr implements Oper {
     public Expr get() {
         // Operations
         if (left instanceof Oper leftOp) {
-            left = leftOp.get();
+            left = (Expr) leftOp.get();
         }
         if (right instanceof Oper rightOp) {
-            right = rightOp.get();
+            right = (Expr) rightOp.get();
         }
 
         // Comparation
@@ -42,22 +42,45 @@ public class MulExpr implements Oper {
         }
 
         // Number or String
-        Integer leftNumber = (left instanceof NumberExpr lNum) ? lNum.value : null;
+        NumberExpr leftNumber = (left instanceof NumberExpr lNum) ? lNum : null;
         String leftString = (left instanceof StringExpr lStr) ? lStr.text : null;
         Boolean leftBoolean = (left instanceof BoolExpr lBool) ? lBool.value : null;
 
-        Integer rightNumber = (right instanceof NumberExpr rNum) ? rNum.value : null;
-        String rightString = (right instanceof StringExpr rStr) ?  rStr.text : null;
+        NumberExpr rightNumber = (right instanceof NumberExpr rNum) ? rNum : null;
+        String rightString = (right instanceof StringExpr rStr) ? rStr.text : null;
         Boolean rightBoolean = (right instanceof BoolExpr rBool) ? rBool.value : null;
 
         // Number
         if (leftNumber != null && rightNumber != null) {
-            return new NumberExpr(leftNumber * rightNumber);
+            return new BoolExpr(false);
+        }
+        if (leftNumber != null && rightString != null) {
+            return new BoolExpr(false);
+        }
+        if (leftNumber != null && rightBoolean != null) {
+            return new BoolExpr(false);
         }
 
         // String
         if (leftString != null && rightNumber != null) {
-            return new StringExpr(leftString.repeat(rightNumber));
+            return new BoolExpr(false);
+        }
+        if (leftString != null && rightString != null) {
+            return new BoolExpr(false);
+        }
+        if (leftString != null && rightBoolean != null) {
+            return new BoolExpr(false);
+        }
+
+        // Boolean
+        if (leftBoolean != null && rightNumber != null) {
+            return new BoolExpr(false);
+        }
+        if (leftBoolean != null && rightString != null) {
+            return new BoolExpr(false);
+        }
+        if (leftBoolean != null && rightBoolean != null) {
+            return new BoolExpr(leftBoolean || rightBoolean);
         }
 
         return null;
@@ -65,6 +88,6 @@ public class MulExpr implements Oper {
 
     @Override
     public String toString() {
-        return get() + "";
+        return left + "&&" + right;
     }
 }

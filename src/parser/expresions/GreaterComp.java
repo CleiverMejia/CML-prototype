@@ -5,12 +5,12 @@ import parser.interfaces.Comp;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
 
-public class PlusExpr implements Oper {
+public class GreaterComp implements Comp {
 
-    private Expr left;
-    private Expr right;
+    public Expr left;
+    public Expr right;
 
-    public PlusExpr(Expr left, Expr right) {
+    public GreaterComp(Expr left, Expr right) {
         this.left = left;
         this.right = right;
     }
@@ -42,45 +42,45 @@ public class PlusExpr implements Oper {
         }
 
         // Number or String
-        Integer leftNumber = (left instanceof NumberExpr lNum) ? lNum.value : null;
+        NumberExpr leftNumber = (left instanceof NumberExpr lNum) ? lNum : null;
         String leftString = (left instanceof StringExpr lStr) ? lStr.text : null;
         Boolean leftBoolean = (left instanceof BoolExpr lBool) ? lBool.value : null;
 
-        Integer rightNumber = (right instanceof NumberExpr rNum) ? rNum.value : null;
+        NumberExpr rightNumber = (right instanceof NumberExpr rNum) ? rNum : null;
         String rightString = (right instanceof StringExpr rStr) ? rStr.text : null;
         Boolean rightBoolean = (right instanceof BoolExpr rBool) ? rBool.value : null;
 
         // Number
         if (leftNumber != null && rightNumber != null) {
-            return new NumberExpr(leftNumber + rightNumber);
+            return new BoolExpr(leftNumber.value > rightNumber.value);
         }
         if (leftNumber != null && rightString != null) {
-            return new StringExpr(leftNumber + rightString);
+            return new BoolExpr(leftNumber.value > Integer.parseInt(rightString));
         }
         if (leftNumber != null && rightBoolean != null) {
-            return new NumberExpr(leftNumber + (rightBoolean ? 1 : 0));
+            return new BoolExpr(leftNumber.value > (rightBoolean ? 1 : 0));
         }
 
         // String
         if (leftString != null && rightNumber != null) {
-            return new StringExpr(leftString + rightNumber);
+            return new BoolExpr(Integer.parseInt(leftString) > rightNumber.value);
         }
         if (leftString != null && rightString != null) {
-            return new StringExpr(leftString + rightString);
+            return new BoolExpr(leftString.compareTo(rightString) > 0);
         }
         if (leftString != null && rightBoolean != null) {
-            return new StringExpr(leftString + rightBoolean);
+            return new BoolExpr(leftString.compareTo(rightBoolean.toString()) > 0);
         }
 
         // Boolean
         if (leftBoolean != null && rightNumber != null) {
-            return new NumberExpr((leftBoolean ? 1 : 0) + rightNumber);
+            return new BoolExpr((leftBoolean ? 1 : 0) > rightNumber.value);
         }
         if (leftBoolean != null && rightString != null) {
-            return new StringExpr(leftBoolean + rightString);
+            return new BoolExpr(leftBoolean.toString().compareTo(rightString) > 0);
         }
         if (leftBoolean != null && rightBoolean != null) {
-            return new BoolExpr(leftBoolean || rightBoolean);
+            return new BoolExpr(leftBoolean && !rightBoolean);
         }
 
         return null;
@@ -88,6 +88,6 @@ public class PlusExpr implements Oper {
 
     @Override
     public String toString() {
-        return get() + "";
+        return left + ">" + right;
     }
 }

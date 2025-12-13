@@ -1,6 +1,7 @@
 package parser.expresions;
 
 import interpreter.Interpreter;
+import parser.interfaces.Comp;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
 
@@ -20,6 +21,14 @@ public class DivExpr implements Expr {
             left = leftOp.get();
         }
         if (right instanceof Oper rightOp) {
+            right = rightOp.get();
+        }
+
+        // Comparation
+        if (left instanceof Comp leftOp) {
+            left = leftOp.get();
+        }
+        if (right instanceof Comp rightOp) {
             right = rightOp.get();
         }
 

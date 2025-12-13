@@ -4,7 +4,7 @@ import parser.interfaces.Expr;
 
 public class BoolExpr implements Expr {
 
-    public boolean value = false;
+    public boolean value;
 
     public BoolExpr(boolean value) {
         this.value = value;

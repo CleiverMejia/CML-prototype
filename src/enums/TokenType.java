@@ -1,12 +1,13 @@
 package enums;
 
 public enum TokenType {
-    NUMBER, STRING,
+    NUMBER, STRING, BOOL,
     LPARENT, RPARENT,
     LBRACE, RBRACE,
     SEMICOLON, ASSIGN,
     PLUS, MINUS, MUL, DIV,
-    IDENT,
+    IDENT, COMMENTARY,
     PRINT, IF, ELSE,
     GREATER, LESS, EQUAL, GREATEREQUAL, LESSEQUAL,
+    AND, OR, NOT
 }

@@ -68,9 +68,12 @@ public class Lexer {
                 continue;
             }
 
-            if (Character.isLetter(character)) { // Letters
+            if (Character.isLetter(character) || character == '_') { // Letters
                 int start = positionLine;
-                while (positionLine < src.length() && Character.isLetter(src.charAt(positionLine))) {
+                while (positionLine < src.length()
+                        && (Character.isLetter(src.charAt(positionLine))
+                        || Character.isDigit(src.charAt(positionLine))
+                        || src.charAt(positionLine) == '_')) {
                     positionLine++;
                 }
 
@@ -83,6 +86,16 @@ public class Lexer {
 
                 if (string.equalsIgnoreCase(TokenType.IF.name())) {
                     tokens.add(new Token(TokenType.IF, string));
+                    continue;
+                }
+
+                if (string.equals("true")) {
+                    tokens.add(new Token(TokenType.BOOL, string));
+                    continue;
+                }
+
+                if (string.equals("false")) {
+                    tokens.add(new Token(TokenType.BOOL, string));
                     continue;
                 }
 
@@ -101,8 +114,16 @@ public class Lexer {
                     tokens.add(new Token(TokenType.MINUS, "-"));
                 case '*' ->
                     tokens.add(new Token(TokenType.MUL, "*"));
-                case '/' ->
+                case '/' -> {
+                    if (src.charAt(positionLine + 1) == '/') {
+                        String commentary = src.substring(positionLine);
+                        tokens.add(new Token(TokenType.COMMENTARY, commentary));
+                        positionLine = src.length() - 1;
+                        break;
+                    }
+
                     tokens.add(new Token(TokenType.DIV, "/"));
+                }
                 case ';' ->
                     tokens.add(new Token(TokenType.SEMICOLON, ";"));
                 case '{' ->
@@ -135,6 +156,13 @@ public class Lexer {
                     }
 
                     tokens.add(new Token(TokenType.ASSIGN, "="));
+                }
+                case '&' -> {
+                    if (src.charAt(positionLine + 1) == '&') {
+                        tokens.add(new Token(TokenType.AND, "&&"));
+                        positionLine++;
+                        break;
+                    }
                 }
                 default -> {
                     System.out.println(src);
