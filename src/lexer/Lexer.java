@@ -78,32 +78,22 @@ public class Lexer {
                 }
 
                 String string = src.substring(start, positionLine);
+                TokenType type;
 
-                if (string.equalsIgnoreCase(TokenType.PRINT.name())) {
-                    tokens.add(new Token(TokenType.PRINT, string));
-                    continue;
+                try {
+                    type = string.matches("true|false")
+                            ? TokenType.BOOL : TokenType.valueOf(string.toUpperCase());
+                } catch (Exception e) {
+                    type = TokenType.IDENT;
                 }
 
-                if (string.equalsIgnoreCase(TokenType.IF.name())) {
-                    tokens.add(new Token(TokenType.IF, string));
-                    continue;
-                }
-
-                if (string.equals("true")) {
-                    tokens.add(new Token(TokenType.BOOL, string));
-                    continue;
-                }
-
-                if (string.equals("false")) {
-                    tokens.add(new Token(TokenType.BOOL, string));
-                    continue;
-                }
-
-                tokens.add(new Token(TokenType.IDENT, string));
+                tokens.add(new Token(type, string));
                 continue;
             }
 
             switch (character) {
+            	case ',' ->
+            		tokens.add(new Token(TokenType.COMMA, ","));
                 case '(' ->
                     tokens.add(new Token(TokenType.LPARENT, "("));
                 case ')' ->
@@ -116,8 +106,6 @@ public class Lexer {
                     tokens.add(new Token(TokenType.MUL, "*"));
                 case '/' -> {
                     if (src.charAt(positionLine + 1) == '/') {
-                        String commentary = src.substring(positionLine);
-                        tokens.add(new Token(TokenType.COMMENTARY, commentary));
                         positionLine = src.length() - 1;
                         break;
                     }
@@ -163,6 +151,15 @@ public class Lexer {
                         positionLine++;
                         break;
                     }
+                }
+                case '!' -> {
+                    if (src.charAt(positionLine + 1) == '=') {
+                        tokens.add(new Token(TokenType.NOTEQUAL, "!="));
+                        positionLine++;
+                        break;
+                    }
+
+                    tokens.add(new Token(TokenType.NOT, "!"));
                 }
                 default -> {
                     System.out.println(src);

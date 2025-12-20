@@ -3,5 +3,5 @@
         "src",
     ],
     "java.project.outputPath": "bin",
-    "files.autoSave": "afterDelay"
+    "files.autoSave": "afterDelay",
 }

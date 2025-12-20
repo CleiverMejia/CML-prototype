@@ -1,8 +1,10 @@
+
 import interpreter.Interpreter;
 import lexer.Lexer;
 import parser.Parser;
 
 public class App {
+
     public static void main(String[] args) throws Exception {
         /* if (args.length == 0) {
             throw new Exception("Missing arguments");
@@ -16,7 +18,7 @@ public class App {
         parser.run();
 
         Interpreter interpreter = new Interpreter();
-        interpreter.run(parser.getStmts());
+        interpreter.run(parser.getMain());
 
     }
 }

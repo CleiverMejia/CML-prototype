@@ -2,10 +2,10 @@ package parser.expresions;
 
 import parser.interfaces.Expr;
 
-public class VarExpr implements Expr {
+public class FuncExpr implements Expr {
     private final String name;
 
-    public VarExpr(String name) {
+    public FuncExpr(String name) {
         this.name = name;
     }
 
@@ -16,10 +16,5 @@ public class VarExpr implements Expr {
     @Override
     public Expr get() {
         return null;
-    }
-
-    @Override
-    public String toString() {
-        return name;
     }
 }

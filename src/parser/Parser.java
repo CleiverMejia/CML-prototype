@@ -2,28 +2,30 @@ package parser;
 
 import enums.TokenType;
 import java.util.ArrayList;
-import java.util.List;
 import lexer.Token;
-import parser.expresions.AndComp;
 import parser.expresions.BoolExpr;
-import parser.expresions.DivExpr;
-import parser.expresions.EqualComp;
-import parser.expresions.GreaterComp;
-import parser.expresions.GreaterEqualComp;
-import parser.expresions.LessComp;
-import parser.expresions.LessEqualComp;
-import parser.expresions.MinusExpr;
-import parser.expresions.MulExpr;
 import parser.expresions.NumberExpr;
-import parser.expresions.PlusExpr;
 import parser.expresions.StringExpr;
 import parser.expresions.VarExpr;
+import parser.expresions.comparations.AndComp;
+import parser.expresions.comparations.EqualComp;
+import parser.expresions.comparations.GreaterComp;
+import parser.expresions.comparations.GreaterEqualComp;
+import parser.expresions.comparations.LessComp;
+import parser.expresions.comparations.LessEqualComp;
+import parser.expresions.comparations.NotEqualComp;
+import parser.expresions.comparations.OrComp;
+import parser.expresions.operations.DivExpr;
+import parser.expresions.operations.MinusExpr;
+import parser.expresions.operations.MulExpr;
+import parser.expresions.operations.PlusExpr;
 import parser.interfaces.Comp;
 import parser.interfaces.Expr;
-import parser.interfaces.Stmt;
 import parser.statements.AssignStmt;
+import parser.statements.FunctionStmt;
 import parser.statements.IfStmt;
 import parser.statements.PrintStmt;
+import parser.statements.WhileStmt;
 
 public class Parser {
 
@@ -35,8 +37,8 @@ public class Parser {
         this.tokens = tokens;
     }
 
-    public List<Stmt> getStmts() {
-        return mainBlock.getStmt();
+    public Block getMain() {
+        return mainBlock;
     }
 
     public void run() {
@@ -59,6 +61,10 @@ public class Parser {
                     block.add(print());
                 case IF ->
                     block.add(ifL());
+                case WHILE ->
+                    block.add(whileL());
+                case FUNCTION ->
+                    block.add(function());
                 default -> {
                 }
             }
@@ -116,6 +122,7 @@ public class Parser {
                     && tokenType != TokenType.LESS
                     && tokenType != TokenType.GREATEREQUAL
                     && tokenType != TokenType.LESSEQUAL
+                    && tokenType != TokenType.NOTEQUAL
                     && tokenType != TokenType.AND
                     && tokenType != TokenType.OR
                     && tokenType != TokenType.NOT) {
@@ -151,8 +158,12 @@ public class Parser {
                     expr = new GreaterEqualComp(expr, rightExpr);
                 case LESSEQUAL ->
                     expr = new LessEqualComp(expr, rightExpr);
+                case NOTEQUAL ->
+                    expr = new NotEqualComp(expr, rightExpr);
                 case AND ->
                     expr = new AndComp(expr, rightExpr);
+                case OR ->
+                    expr = new OrComp(expr, rightExpr);
                 default -> {
                 }
             }
@@ -175,10 +186,49 @@ public class Parser {
         return new PrintStmt(expr);
     }
 
-    public IfStmt ifL() {
+    private IfStmt ifL() {
         Comp condition = (Comp) getExpr();
         Block body = getBlock();
 
+        if (pos + 1 < tokens.size() && tokens.get(pos + 1).type == TokenType.ELSE) {
+            pos++;
+            Block elseBody = getBlock();
+
+            return new IfStmt(condition, body, elseBody);
+        }
+
         return new IfStmt(condition, body);
+    }
+
+    private WhileStmt whileL() {
+        Comp condition = (Comp) getExpr();
+        Block body = getBlock();
+
+        return new WhileStmt(condition, body);
+    }
+
+    private FunctionStmt function() {
+        String funcName = tokens.get(pos).string;
+        ArrayList<String> arg = new ArrayList<>();
+
+        if (tokens.get(pos + 1).type == TokenType.LPARENT) {
+            pos+=2;
+
+            while (pos < tokens.size() && tokens.get(pos).type != TokenType.RPARENT) {
+                if (tokens.get(pos).type == TokenType.COMMA) {
+                    pos++;
+                    continue;
+                }
+
+                arg.add(tokens.get(pos).string);
+                pos++;
+            }
+        }
+
+        Block body = getBlock();
+
+        System.out.println(arg);
+
+        return new FunctionStmt(funcName, body);
     }
 }

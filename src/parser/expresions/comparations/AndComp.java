@@ -1,14 +1,18 @@
-package parser.expresions;
+package parser.expresions.comparations;
 
-import interpreter.Interpreter;
+import interpreter.SymbolTable;
+import parser.expresions.BoolExpr;
+import parser.expresions.NumberExpr;
+import parser.expresions.StringExpr;
+import parser.expresions.VarExpr;
 import parser.interfaces.Comp;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
 
 public class AndComp implements Comp {
 
-    public Expr left;
-    public Expr right;
+    private final Expr left;
+    private final Expr right;
 
     public AndComp(Expr left, Expr right) {
         this.left = left;
@@ -17,38 +21,41 @@ public class AndComp implements Comp {
 
     @Override
     public Expr get() {
+        Expr leftTemp = left;
+        Expr rightTemp = right;
+
         // Operations
-        if (left instanceof Oper leftOp) {
-            left = (Expr) leftOp.get();
+        if (leftTemp instanceof Oper leftOp) {
+            leftTemp= leftOp.get();
         }
-        if (right instanceof Oper rightOp) {
-            right = (Expr) rightOp.get();
+        if (rightTemp instanceof Oper rightOp) {
+            rightTemp = rightOp.get();
         }
 
         // Comparation
-        if (left instanceof Comp leftOp) {
-            left = leftOp.get();
+        if (leftTemp instanceof Comp leftOp) {
+            leftTemp= leftOp.get();
         }
-        if (right instanceof Comp rightOp) {
-            right = rightOp.get();
+        if (rightTemp instanceof Comp rightOp) {
+            rightTemp = rightOp.get();
         }
 
         // Variables
-        if (left instanceof VarExpr leftVar) {
-            left = Interpreter.symbolTable.get(leftVar.name);
+        if (leftTemp instanceof VarExpr leftVar) {
+            leftTemp = SymbolTable.get(leftVar.getName());
         }
-        if (right instanceof VarExpr rightVar) {
-            right = Interpreter.symbolTable.get(rightVar.name);
+        if (rightTemp instanceof VarExpr rightVar) {
+            rightTemp = SymbolTable.get(rightVar.getName());
         }
 
         // Number or String
-        NumberExpr leftNumber = (left instanceof NumberExpr lNum) ? lNum : null;
-        String leftString = (left instanceof StringExpr lStr) ? lStr.text : null;
-        Boolean leftBoolean = (left instanceof BoolExpr lBool) ? lBool.value : null;
+        NumberExpr leftNumber = (leftTemp instanceof NumberExpr lNum) ? lNum : null;
+        String leftString = (leftTemp instanceof StringExpr lStr) ? lStr.text : null;
+        Boolean leftBoolean = (leftTemp instanceof BoolExpr lBool) ? lBool.value : null;
 
-        NumberExpr rightNumber = (right instanceof NumberExpr rNum) ? rNum : null;
-        String rightString = (right instanceof StringExpr rStr) ? rStr.text : null;
-        Boolean rightBoolean = (right instanceof BoolExpr rBool) ? rBool.value : null;
+        NumberExpr rightNumber = (rightTemp instanceof NumberExpr rNum) ? rNum : null;
+        String rightString = (rightTemp instanceof StringExpr rStr) ? rStr.text : null;
+        Boolean rightBoolean = (rightTemp instanceof BoolExpr rBool) ? rBool.value : null;
 
         // Number
         if (leftNumber != null && rightNumber != null) {

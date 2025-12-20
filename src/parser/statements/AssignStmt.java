@@ -1,5 +1,6 @@
 package parser.statements;
 
+import interpreter.SymbolTable;
 import parser.expresions.VarExpr;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
@@ -16,12 +17,16 @@ public class AssignStmt implements Stmt {
     }
 
     public String getName() {
-        return varName.name;
+        return varName.getName();
     }
 
     public Expr getValue() {
         if (expr instanceof Oper exprOp) {
             return exprOp.get();
+        }
+
+        if (expr instanceof VarExpr exprVar) {
+            return SymbolTable.get(exprVar.getName());
         }
 
         return expr;
