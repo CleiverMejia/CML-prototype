@@ -1,5 +1,6 @@
 package parser.expresions;
 
+import interpreter.Frame;
 import parser.interfaces.Expr;
 
 public class VarExpr implements Expr {
@@ -20,6 +21,6 @@ public class VarExpr implements Expr {
 
     @Override
     public String toString() {
-        return name;
+        return Frame.get(name).toString();
     }
 }

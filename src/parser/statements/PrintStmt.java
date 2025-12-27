@@ -1,6 +1,6 @@
 package parser.statements;
 
-import interpreter.SymbolTable;
+import interpreter.Frame;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
 import parser.expresions.VarExpr;
@@ -17,7 +17,7 @@ public class PrintStmt implements Stmt {
 
     public Object getText() {
         if (expr instanceof VarExpr var) {
-            return SymbolTable.get(var.getName());
+            return Frame.get(var.getName());
         }
 
         if (expr instanceof NumberExpr number) {

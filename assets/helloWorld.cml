@@ -1,6 +1,14 @@
-a = 0;//dsdaaoaokdsoaksdk
-b = 1; //asd
+a = 0; // Comentario
+b = 1; // asd
 count = 0;
+
+print("Hola");
+sqrt(2);
+
+function asd() {
+    fokinscope = "asd";
+    print("hola");
+}
 
 while(count < 10) {
     c = a + b;
@@ -10,3 +18,4 @@ while(count < 10) {
     print(b);
     count = count + 1;
 }
+

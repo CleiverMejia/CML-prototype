@@ -3,6 +3,8 @@ package parser;
 import enums.TokenType;
 import java.util.ArrayList;
 import lexer.Token;
+import lib.Print;
+import lib.Sqrt;
 import parser.expresions.BoolExpr;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
@@ -22,14 +24,14 @@ import parser.expresions.operations.PlusExpr;
 import parser.interfaces.Comp;
 import parser.interfaces.Expr;
 import parser.statements.AssignStmt;
+import parser.statements.CallStmt;
 import parser.statements.FunctionStmt;
 import parser.statements.IfStmt;
-import parser.statements.PrintStmt;
 import parser.statements.WhileStmt;
 
 public class Parser {
 
-    private Block mainBlock = new Block();
+    private final Block mainBlock = new Block(new Print(), new Sqrt());
     private final ArrayList<Token> tokens;
     private int pos = 0;
 
@@ -42,7 +44,7 @@ public class Parser {
     }
 
     public void run() {
-        mainBlock = getBlock();
+        mainBlock.addAll(getBlock());
     }
 
     private Block getBlock() {
@@ -55,10 +57,13 @@ public class Parser {
                 case RBRACE -> {
                     return block;
                 }
+                case IDENT -> {
+                    if (tokens.get(pos + 1).type == TokenType.LPARENT) {
+                        block.add(call());
+                    }
+                }
                 case ASSIGN ->
                     block.add(assign());
-                case PRINT ->
-                    block.add(print());
                 case IF ->
                     block.add(ifL());
                 case WHILE ->
@@ -109,7 +114,8 @@ public class Parser {
 
             if (tokenType == TokenType.SEMICOLON
                     || tokenType == TokenType.RPARENT
-                    || tokenType == TokenType.LBRACE) {
+                    || tokenType == TokenType.LBRACE
+                    || tokenType == TokenType.COMMA) {
                 break;
             }
 
@@ -180,12 +186,6 @@ public class Parser {
         return new AssignStmt(new VarExpr(name), expr);
     }
 
-    private PrintStmt print() {
-        Expr expr = getExpr();
-
-        return new PrintStmt(expr);
-    }
-
     private IfStmt ifL() {
         Comp condition = (Comp) getExpr();
         Block body = getBlock();
@@ -208,11 +208,11 @@ public class Parser {
     }
 
     private FunctionStmt function() {
-        String funcName = tokens.get(pos).string;
+        String funcName = tokens.get(++pos).string;
         ArrayList<String> arg = new ArrayList<>();
 
         if (tokens.get(pos + 1).type == TokenType.LPARENT) {
-            pos+=2;
+            pos += 2;
 
             while (pos < tokens.size() && tokens.get(pos).type != TokenType.RPARENT) {
                 if (tokens.get(pos).type == TokenType.COMMA) {
@@ -227,8 +227,17 @@ public class Parser {
 
         Block body = getBlock();
 
-        System.out.println(arg);
+        return new FunctionStmt(funcName, arg, body);
+    }
 
-        return new FunctionStmt(funcName, body);
+    private CallStmt call() {
+        String funcName = tokens.get(pos++).string;
+        ArrayList<Expr> args = new ArrayList<>();
+
+        while (tokens.get(pos).type != TokenType.RPARENT) {
+            args.add(getExpr());
+        }
+
+        return new CallStmt(funcName, args);
     }
 }

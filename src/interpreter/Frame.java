@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Stack;
 import parser.interfaces.Expr;
 
-public class SymbolTable {
+public class Frame {
 
     private static final Stack<Map<String, Expr>> table = new Stack<>();
 
@@ -35,6 +35,10 @@ public class SymbolTable {
             }
         }
 
-        return null;
+        throw new Error("Assignment not found");
+    }
+
+    public static String toStrings() {
+        return table.toString();
     }
 }

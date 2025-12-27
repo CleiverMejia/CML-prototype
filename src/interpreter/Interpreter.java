@@ -4,22 +4,20 @@ import parser.Block;
 import parser.expresions.BoolExpr;
 import parser.interfaces.Stmt;
 import parser.statements.AssignStmt;
+import parser.statements.CallStmt;
+import parser.statements.ExternStmt;
+import parser.statements.FunctionStmt;
 import parser.statements.IfStmt;
-import parser.statements.PrintStmt;
 import parser.statements.WhileStmt;
 
 public class Interpreter {
 
     public void run(Block block) {
-        SymbolTable.createScope();
+        Frame.createScope();
 
         for (Stmt stmt : block) {
-            if (stmt instanceof PrintStmt printStmt) {
-                System.out.println(printStmt.getText());
-            }
-
             if (stmt instanceof AssignStmt assignStmt) {
-                SymbolTable.put(assignStmt.getName(), assignStmt.getValue());
+                Frame.put(assignStmt.getName(), assignStmt.getValue());
             }
 
             if (stmt instanceof IfStmt ifStmt) {
@@ -40,8 +38,20 @@ public class Interpreter {
                     condition = (BoolExpr) whileStmt.getCondition().get();
                 }
             }
+
+            if (stmt instanceof FunctionStmt functionStmt) {
+                Frame.put(functionStmt.getName(), functionStmt.getFunction());
+            }
+
+            if (stmt instanceof CallStmt callStmt) {
+                run(callStmt.getBody());
+            }
+
+            if (stmt instanceof ExternStmt externStmt) {
+                externStmt.exec();
+            }
         }
 
-        SymbolTable.pop();
+        Frame.pop();
     }
 }

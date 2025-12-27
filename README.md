@@ -21,17 +21,6 @@ Thing1 = true;
 // Invalid
 1name = "John Doe";
 not$valid = "Error";
-
-```
-
-- **Displaying messages in the console**, to display messages on the screen, use `print();`. You can add expressions, primitive types, or variables to display them in the console.
-
-```
-print("Hello world!"); // > Hello world
-print(2 + 2); // > 4
-
-name = "John Doe";
-print("Hello, my name is " + name); // > Hello, my name is John Doe
 ```
 
 - **Conditional if statement**, A classic if statement
@@ -64,8 +53,45 @@ while(i < 10) {
   i = i + 1;
 }
 ```
+
+- **Functions**, the ability to create functions; There are also pre-loaded functions
+
+```
+function sum(a, b) {
+    print(a+b);
+}
+
+sum(2+3) // > 5
+
+print("Hello world!"); // > Hello world
+sqrt(4) // > 2
+```
+
+- **Extern**, encoding outside of language. to implement functions with behaviors defined from Java
+
+```java
+public Print() {
+    Block block = new Block(new ExternStmt() {
+        @Override
+        public void exec() {
+            Expr expr = Frame.get("text");
+            System.out.println(expr);
+        }
+    });
+
+    FuncExpr function = new FuncExpr(block, "text");
+
+    setName("print");
+    setFunction(function);
+}
+```
+
+^ This is the implementation of the print function
+
 ## Note
 
 - The `number` data type only accepts positive integers
 - Expressions have no type precedence except for parentheses; all are read from left to right
 - The not(!) comparison is included and referenced in the code but is not yet available for use
+- The functions must be defined before they are used
+- 

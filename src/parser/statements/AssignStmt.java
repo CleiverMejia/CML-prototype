@@ -1,6 +1,6 @@
 package parser.statements;
 
-import interpreter.SymbolTable;
+import interpreter.Frame;
 import parser.expresions.VarExpr;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
@@ -26,7 +26,7 @@ public class AssignStmt implements Stmt {
         }
 
         if (expr instanceof VarExpr exprVar) {
-            return SymbolTable.get(exprVar.getName());
+            return Frame.get(exprVar.getName());
         }
 
         return expr;

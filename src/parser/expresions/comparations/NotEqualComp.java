@@ -1,6 +1,6 @@
 package parser.expresions.comparations;
 
-import interpreter.SymbolTable;
+import interpreter.Frame;
 import java.util.Objects;
 import parser.expresions.BoolExpr;
 import parser.expresions.NumberExpr;
@@ -43,10 +43,10 @@ public class NotEqualComp implements Comp {
 
         // Variables
         if (leftTemp instanceof VarExpr leftVar) {
-            leftTemp = SymbolTable.get(leftVar.getName());
+            leftTemp = Frame.get(leftVar.getName());
         }
         if (rightTemp instanceof VarExpr rightVar) {
-            rightTemp = SymbolTable.get(rightVar.getName());
+            rightTemp = Frame.get(rightVar.getName());
         }
 
         // Number or String

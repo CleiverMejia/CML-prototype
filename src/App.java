@@ -17,6 +17,9 @@ public class App {
         Parser parser = new Parser(lexer.getTokens());
         parser.run();
 
+        /* Semantic semantic = new Semantic();
+        semantic.run(parser.getMain()); */
+
         Interpreter interpreter = new Interpreter();
         interpreter.run(parser.getMain());
 

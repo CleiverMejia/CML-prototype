@@ -1,6 +1,6 @@
 package parser.expresions.operations;
 
-import interpreter.SymbolTable;
+import interpreter.Frame;
 import parser.expresions.BoolExpr;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
@@ -42,10 +42,10 @@ public class MinusExpr implements Oper {
 
         // Variables
         if (leftTemp instanceof VarExpr leftVar) {
-            leftTemp = SymbolTable.get(leftVar.getName());
+            leftTemp = Frame.get(leftVar.getName());
         }
         if (rightTemp instanceof VarExpr rightVar) {
-            rightTemp = SymbolTable.get(rightVar.getName());
+            rightTemp = Frame.get(rightVar.getName());
         }
 
         // Number or String
