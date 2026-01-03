@@ -3,35 +3,16 @@ package parser;
 import enums.TokenType;
 import java.util.ArrayList;
 import lexer.Token;
-import lib.Print;
-import lib.Sqrt;
-import parser.expresions.BoolExpr;
-import parser.expresions.NumberExpr;
-import parser.expresions.StringExpr;
-import parser.expresions.VarExpr;
-import parser.expresions.comparations.AndComp;
-import parser.expresions.comparations.EqualComp;
-import parser.expresions.comparations.GreaterComp;
-import parser.expresions.comparations.GreaterEqualComp;
-import parser.expresions.comparations.LessComp;
-import parser.expresions.comparations.LessEqualComp;
-import parser.expresions.comparations.NotEqualComp;
-import parser.expresions.comparations.OrComp;
-import parser.expresions.operations.DivExpr;
-import parser.expresions.operations.MinusExpr;
-import parser.expresions.operations.MulExpr;
-import parser.expresions.operations.PlusExpr;
-import parser.interfaces.Comp;
-import parser.interfaces.Expr;
-import parser.statements.AssignStmt;
-import parser.statements.CallStmt;
-import parser.statements.FunctionStmt;
-import parser.statements.IfStmt;
-import parser.statements.WhileStmt;
+import lib.*;
+import parser.expresions.*;
+import parser.expresions.comparations.*;
+import parser.expresions.operations.*;
+import parser.interfaces.*;
+import parser.statements.*;
 
 public class Parser {
 
-    private final Block mainBlock = new Block(new Print(), new Sqrt());
+    private final Block mainBlock = new Block(new Print(), new Sqrt(), new Http());
     private final ArrayList<Token> tokens;
     private int pos = 0;
 
@@ -70,6 +51,8 @@ public class Parser {
                     block.add(whileL());
                 case FUNCTION ->
                     block.add(function());
+                case RETURN ->
+                    block.add(returnL());
                 default -> {
                 }
             }
@@ -94,7 +77,20 @@ public class Parser {
         }
 
         if (tokenValue.type == TokenType.IDENT) {
-            return new VarExpr(tokenValue.string);
+            String name = tokenValue.string;
+
+            if (tokens.get(pos + 1).type == TokenType.LPARENT) {
+                pos++;
+                ArrayList<Expr> args = new ArrayList<>();
+
+                while (tokens.get(pos).type != TokenType.RPARENT) {
+                    args.add(getExpr());
+                }
+
+                return new CallExpr(name, args);
+            }
+
+            return new VarExpr(name);
         }
 
         return null;
@@ -227,7 +223,7 @@ public class Parser {
 
         Block body = getBlock();
 
-        return new FunctionStmt(funcName, arg, body);
+        return new FunctionStmt(new FuncExpr(funcName, arg, body));
     }
 
     private CallStmt call() {
@@ -239,5 +235,11 @@ public class Parser {
         }
 
         return new CallStmt(funcName, args);
+    }
+
+    private ReturnStmt returnL() {
+        Expr result = getExpr();
+
+        return new ReturnStmt(result);
     }
 }

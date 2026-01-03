@@ -15,13 +15,12 @@ public class Sqrt extends FunctionStmt {
             public void exec() {
                 NumberExpr a = (NumberExpr) Frame.get("a");
 
-                System.out.println(Math.sqrt(a.value));
+                Frame.setReturn(new NumberExpr((float) Math.sqrt(a.value)));
             }
         });
 
-        FuncExpr function = new FuncExpr(block, "a");
+        FuncExpr function = new FuncExpr("sqrt", block, "a");
 
-        setName("sqrt");
         setFunction(function);
     }
 }

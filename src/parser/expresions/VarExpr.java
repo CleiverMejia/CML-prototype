@@ -21,6 +21,6 @@ public class VarExpr implements Expr {
 
     @Override
     public String toString() {
-        return Frame.get(name).toString();
+        return Frame.get(name) + "";
     }
 }

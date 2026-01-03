@@ -6,9 +6,9 @@ public class Token {
 
     public TokenType type;
     public String string;
-    public int value;
+    public float value;
 
-    public Token(TokenType type, int value) {
+    public Token(TokenType type, float value) {
         this.type = type;
         this.value = value;
     }

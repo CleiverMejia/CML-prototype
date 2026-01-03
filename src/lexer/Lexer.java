@@ -48,11 +48,13 @@ public class Lexer {
 
             if (Character.isDigit(character)) { // Digits
                 int start = positionLine;
-                while (positionLine < src.length() && Character.isDigit(src.charAt(positionLine))) {
+                while (positionLine < src.length()
+                        && (Character.isDigit(src.charAt(positionLine))
+                        || src.charAt(positionLine) == '.')) {
                     positionLine++;
                 }
 
-                int value = Integer.parseInt(src.substring(start, positionLine));
+                float value = Float.parseFloat(src.substring(start, positionLine));
                 tokens.add(new Token(TokenType.NUMBER, value));
                 continue;
             }
@@ -92,8 +94,8 @@ public class Lexer {
             }
 
             switch (character) {
-            	case ',' ->
-            		tokens.add(new Token(TokenType.COMMA, ","));
+                case ',' ->
+                    tokens.add(new Token(TokenType.COMMA, ","));
                 case '(' ->
                     tokens.add(new Token(TokenType.LPARENT, "("));
                 case ')' ->

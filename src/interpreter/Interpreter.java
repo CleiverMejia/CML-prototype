@@ -8,11 +8,12 @@ import parser.statements.CallStmt;
 import parser.statements.ExternStmt;
 import parser.statements.FunctionStmt;
 import parser.statements.IfStmt;
+import parser.statements.ReturnStmt;
 import parser.statements.WhileStmt;
 
 public class Interpreter {
 
-    public void run(Block block) {
+    public static void run(Block block) {
         Frame.createScope();
 
         for (Stmt stmt : block) {
@@ -49,6 +50,10 @@ public class Interpreter {
 
             if (stmt instanceof ExternStmt externStmt) {
                 externStmt.exec();
+            }
+
+            if (stmt instanceof ReturnStmt returnStmt) {
+                Frame.setReturn(returnStmt.getExpr());
             }
         }
 

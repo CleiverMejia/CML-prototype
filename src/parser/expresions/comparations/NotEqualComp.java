@@ -3,6 +3,7 @@ package parser.expresions.comparations;
 import interpreter.Frame;
 import java.util.Objects;
 import parser.expresions.BoolExpr;
+import parser.expresions.CallExpr;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
 import parser.expresions.VarExpr;
@@ -24,6 +25,14 @@ public class NotEqualComp implements Comp {
     public Expr get() {
         Expr leftTemp = left;
         Expr rightTemp = right;
+
+        // calls
+        if (leftTemp instanceof CallExpr leftCall) {
+            leftTemp = leftCall.get();
+        }
+        if (rightTemp instanceof CallExpr rightCall) {
+            rightTemp = rightCall.get();
+        }
 
         // Operations
         if (leftTemp instanceof Oper leftOp) {

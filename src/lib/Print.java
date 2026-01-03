@@ -18,9 +18,8 @@ public class Print extends FunctionStmt {
             }
         });
 
-        FuncExpr function = new FuncExpr(block, "text");
+        FuncExpr function = new FuncExpr("print", block, "text");
 
-        setName("print");
         setFunction(function);
     }
 }

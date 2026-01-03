@@ -1,6 +1,7 @@
 package parser.statements;
 
 import interpreter.Frame;
+import parser.expresions.CallExpr;
 import parser.expresions.VarExpr;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
@@ -27,6 +28,10 @@ public class AssignStmt implements Stmt {
 
         if (expr instanceof VarExpr exprVar) {
             return Frame.get(exprVar.getName());
+        }
+
+        if (expr instanceof CallExpr exprCall) {
+            return exprCall.get();
         }
 
         return expr;

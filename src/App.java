@@ -20,8 +20,7 @@ public class App {
         /* Semantic semantic = new Semantic();
         semantic.run(parser.getMain()); */
 
-        Interpreter interpreter = new Interpreter();
-        interpreter.run(parser.getMain());
+        Interpreter.run(parser.getMain());
 
     }
 }

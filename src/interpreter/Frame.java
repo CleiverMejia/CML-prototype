@@ -8,6 +8,7 @@ import parser.interfaces.Expr;
 public class Frame {
 
     private static final Stack<Map<String, Expr>> table = new Stack<>();
+    private static Expr returnStack = null;
 
     public static void createScope() {
         table.add(new HashMap<>());
@@ -36,6 +37,14 @@ public class Frame {
         }
 
         throw new Error("Assignment not found");
+    }
+
+    public static void setReturn(Expr expr) {
+        returnStack = expr;
+    }
+
+    public static Expr getReturn() {
+        return returnStack;
     }
 
     public static String toStrings() {

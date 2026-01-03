@@ -58,13 +58,12 @@ while(i < 10) {
 
 ```
 function sum(a, b) {
-    print(a+b);
+    return a+b;
 }
 
-sum(2+3) // > 5
+c = sum(2+3) // > 5
 
-print("Hello world!"); // > Hello world
-sqrt(4) // > 2
+print("Hello world!"); // > Hello world!
 ```
 
 - **Extern**, encoding outside of language. to implement functions with behaviors defined from Java
@@ -79,9 +78,8 @@ public Print() {
         }
     });
 
-    FuncExpr function = new FuncExpr(block, "text");
+    FuncExpr function = new FuncExpr("print", block, "text");
 
-    setName("print");
     setFunction(function);
 }
 ```
@@ -90,8 +88,6 @@ public Print() {
 
 ## Note
 
-- The `number` data type only accepts positive integers
 - Expressions have no type precedence except for parentheses; all are read from left to right
 - The not(!) comparison is included and referenced in the code but is not yet available for use
 - The functions must be defined before they are used
-- 

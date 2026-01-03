@@ -2,6 +2,7 @@ package parser.expresions.operations;
 
 import interpreter.Frame;
 import parser.expresions.BoolExpr;
+import parser.expresions.CallExpr;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
 import parser.expresions.VarExpr;
@@ -23,6 +24,14 @@ public class PlusExpr implements Oper {
     public Expr get() {
         Expr leftTemp = this.left;
         Expr rightTemp = this.right;
+
+        // calls
+        if (leftTemp instanceof CallExpr leftCall) {
+            leftTemp = leftCall.get();
+        }
+        if (rightTemp instanceof CallExpr rightCall) {
+            rightTemp = rightCall.get();
+        }
 
         // Operations
         if (leftTemp instanceof Oper leftOp) {
@@ -49,11 +58,11 @@ public class PlusExpr implements Oper {
         }
 
         // Number or String
-        Integer leftNumber = (leftTemp instanceof NumberExpr lNum) ? lNum.value : null;
+        Float leftNumber = (leftTemp instanceof NumberExpr lNum) ? lNum.value : null;
         String leftString = (leftTemp instanceof StringExpr lStr) ? lStr.text : null;
         Boolean leftBoolean = (leftTemp instanceof BoolExpr lBool) ? lBool.value : null;
 
-        Integer rightNumber = (rightTemp instanceof NumberExpr rNum) ? rNum.value : null;
+        Float rightNumber = (rightTemp instanceof NumberExpr rNum) ? rNum.value : null;
         String rightString = (rightTemp instanceof StringExpr rStr) ? rStr.text : null;
         Boolean rightBoolean = (rightTemp instanceof BoolExpr rBool) ? rBool.value : null;
 
@@ -89,6 +98,8 @@ public class PlusExpr implements Oper {
         if (leftBoolean != null && rightBoolean != null) {
             return new BoolExpr(leftBoolean || rightBoolean);
         }
+
+        System.out.println("???");
 
         return null;
     }

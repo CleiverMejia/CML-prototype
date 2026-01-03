@@ -4,9 +4,9 @@ import parser.interfaces.Expr;
 
 public class NumberExpr implements Expr {
 
-    public int value;
+    public float value;
 
-    public NumberExpr(int value) {
+    public NumberExpr(float value) {
         this.value = value;
     }
 
@@ -17,6 +17,6 @@ public class NumberExpr implements Expr {
 
     @Override
     public String toString() {
-        return String.valueOf(value);
+        return value == (int) value ? String.valueOf((int) value) : String.valueOf(value);
     }
 }

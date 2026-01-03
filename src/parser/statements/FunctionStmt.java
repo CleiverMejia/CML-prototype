@@ -1,6 +1,5 @@
 package parser.statements;
 
-import java.util.ArrayList;
 import parser.Block;
 import parser.expresions.FuncExpr;
 import parser.interfaces.Stmt;
@@ -11,9 +10,9 @@ public class FunctionStmt implements Stmt {
 
     public FunctionStmt() {}
 
-    public FunctionStmt(String funcName, ArrayList<String> args, Block body) {
-        this.funcName = funcName;
-        this.func = new FuncExpr(args, body);
+    public FunctionStmt(FuncExpr function) {
+        this.funcName = function.getName();
+        this.func = function;
     }
 
     public void setName(String funcName) {
@@ -21,6 +20,8 @@ public class FunctionStmt implements Stmt {
     }
 
     public void setFunction(FuncExpr func) {
+        setName(func.getName());
+
         this.func = func;
     }
 

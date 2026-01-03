@@ -1,6 +1,7 @@
 package parser.expresions.operations;
 
 import interpreter.Frame;
+import parser.expresions.CallExpr;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
 import parser.expresions.VarExpr;
@@ -22,6 +23,14 @@ public class DivExpr implements Expr {
     public Expr get() {
         Expr leftTemp = left;
         Expr rightTemp = right;
+
+        // calls
+        if (leftTemp instanceof CallExpr leftCall) {
+            leftTemp = leftCall.get();
+        }
+        if (rightTemp instanceof CallExpr rightCall) {
+            rightTemp = rightCall.get();
+        }
 
         // Operations
         if (leftTemp instanceof Oper leftOp) {
@@ -48,10 +57,10 @@ public class DivExpr implements Expr {
         }
 
         // Number or String
-        Integer leftNumber = (leftTemp instanceof NumberExpr lNum) ? lNum.value : null;
+        Float leftNumber = (leftTemp instanceof NumberExpr lNum) ? lNum.value : null;
         String leftString = (leftTemp instanceof StringExpr lStr) ? lStr.text : null;
 
-        Integer rightNumber = (rightTemp instanceof NumberExpr rNum) ? rNum.value : null;
+        Float rightNumber = (rightTemp instanceof NumberExpr rNum) ? rNum.value : null;
         String rightString = (rightTemp instanceof StringExpr rStr) ? rStr.text : null;
 
         if (leftNumber != null && rightNumber != null) {

@@ -1,21 +1,13 @@
-a = 0; // Comentario
-b = 1; // asd
-count = 0;
+n = 2.5;
 
-print("Hola");
-sqrt(2);
-
-function asd() {
-    fokinscope = "asd";
-    print("hola");
+function sum(a, b) {
+    return a + b;
 }
 
-while(count < 10) {
-    c = a + b;
-    a = b;
-    b = c;
+n2 = sum(n, 1);
 
-    print(b);
-    count = count + 1;
-}
+print(n2);
 
+n3 = sqrt(2);
+
+print(n3);
