@@ -14,7 +14,22 @@ public class Print extends FunctionStmt {
             @Override
             public void exec() {
                 Expr expr = Frame.get("text");
-                System.out.println(expr);
+                if (expr != null) {
+                    String text = expr.toString()
+                            .replace("\\\\", "\\")
+                            .replace("\\n", "\n")
+                            .replace("\\t", "\t")
+                            .replace("\\r", "\r")
+                            .replace("\\b", "\b")
+                            .replace("\\f", "\f")
+                            .replace("\\\"", "\"")
+                            .replace("\\'", "'");
+
+                    System.out.println(text);
+                    return;
+                }
+
+                System.out.println("");
             }
         });
 

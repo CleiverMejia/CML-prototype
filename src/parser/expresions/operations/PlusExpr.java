@@ -99,9 +99,9 @@ public class PlusExpr implements Oper {
             return new BoolExpr(leftBoolean || rightBoolean);
         }
 
-        System.out.println("???");
-
-        return null;
+        throw new Error("left->" + (leftTemp == null ? "null" : leftTemp.getClass())
+                + " + right->" + (rightTemp == null ? "null" : rightTemp.getClass())
+                + " is not valid");
     }
 
     @Override

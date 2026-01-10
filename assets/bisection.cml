@@ -1,0 +1,53 @@
+function sign(n) {
+    if (n == 0) {
+        return 0;
+    } else {
+        if (n > 0) {
+            return 1;
+        } else {
+            return 0 - 1;
+        }
+    }
+}
+
+function abs(n) {
+    if(n < 0) {
+        return n * (0-1);
+    } else {
+        return n;
+    }
+}
+
+function bisection(a, b) {
+    prevMean = 0;
+    mean = 0;
+    error = 1;
+
+    while(error > 0.001) {
+        mean = (a + b) / 2;
+        error = abs(prevMean - mean);
+        prevMean = mean;
+
+        signMean = sign(f(mean));
+        signA = sign(f(a));
+        signB = sign(f(b));
+
+        if(signMean == signA) {
+            a = mean;
+        }
+
+        if(signMean == signB) {
+            b = mean;
+        }
+    }
+
+    return mean;
+}
+
+function sqrt2(n) {
+    function f(x) {
+        return (x*x) - n;
+    }
+
+    return bisection(0, n);
+}

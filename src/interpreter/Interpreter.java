@@ -3,13 +3,7 @@ package interpreter;
 import parser.Block;
 import parser.expresions.BoolExpr;
 import parser.interfaces.Stmt;
-import parser.statements.AssignStmt;
-import parser.statements.CallStmt;
-import parser.statements.ExternStmt;
-import parser.statements.FunctionStmt;
-import parser.statements.IfStmt;
-import parser.statements.ReturnStmt;
-import parser.statements.WhileStmt;
+import parser.statements.*;
 
 public class Interpreter {
 
@@ -23,6 +17,7 @@ public class Interpreter {
 
             if (stmt instanceof IfStmt ifStmt) {
                 BoolExpr condition = (BoolExpr) ifStmt.getCondition().get();
+
                 if (condition.value) {
                     run(ifStmt.getBody());
                 } else if (ifStmt.getElse() != null) {
@@ -46,6 +41,7 @@ public class Interpreter {
 
             if (stmt instanceof CallStmt callStmt) {
                 run(callStmt.getBody());
+                Frame.popArg();
             }
 
             if (stmt instanceof ExternStmt externStmt) {
@@ -54,6 +50,11 @@ public class Interpreter {
 
             if (stmt instanceof ReturnStmt returnStmt) {
                 Frame.setReturn(returnStmt.getExpr());
+                break;
+            }
+
+            if (stmt instanceof ClassStmt classStmt) {
+                Frame.put(classStmt.getName(), classStmt.getClss());
             }
         }
 

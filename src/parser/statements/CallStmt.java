@@ -9,6 +9,7 @@ import parser.interfaces.Expr;
 import parser.interfaces.Stmt;
 
 public class CallStmt implements Stmt {
+
     private final String name;
     private final List<Expr> args;
 
@@ -19,9 +20,10 @@ public class CallStmt implements Stmt {
 
     public Block getBody() {
         FuncExpr func = (FuncExpr) Frame.get(name);
+        Frame.createArgScope();
 
         for (int i = 0; i < func.getArgs().size(); i++) {
-            Frame.put(func.getArgs().get(i), args.get(i));
+            Frame.putArg(func.getArgs().get(i), args.get(i));
         }
 
         return func.getBody();

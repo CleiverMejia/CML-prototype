@@ -1,41 +1,47 @@
 package lexer;
 
 import enums.TokenType;
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Iterator;
+import java.util.List;
 
 public class Lexer {
 
-    private Scanner doc;
-    private ArrayList<Token> tokens = new ArrayList<>();
+    private final Iterator<String> doc;
+    private final ArrayList<Token> tokens = new ArrayList<>();
 
-    public Lexer(String fileName) throws Exception {
-        try {
-            File file = new File(fileName);
+    public Lexer(String filePath) throws IOException {
+        doc = getFile(filePath).iterator();
+    }
 
-            if (!file.exists()) {
-                throw new Exception("File not found");
+    private List<String> getFile(String filePath) throws IOException {
+        List<String> lines = Files.readAllLines(Path.of(filePath));
+
+        for (int i = 0; i < lines.size(); i++) {
+             if (lines.get(i).trim().matches("import \"(.*)\";")) {
+                String sep[] = lines.get(i).split("\"");
+
+                lines.remove(i);
+                lines.addAll(i, getFile("./assets/" + sep[1]));
             }
-
-            doc = new Scanner(file);
-        } catch (FileNotFoundException e) {
-            System.out.println(e);
         }
+
+        return lines;
     }
 
     public void run() {
-        while (this.doc.hasNextLine()) {
+        while (this.doc.hasNext()) {
             next();
         }
 
         //tokens.forEach(row -> System.out.println(row));
-        this.doc.close();
     }
 
     public void next() {
-        String src = this.doc.nextLine();
+        String src = this.doc.next();
         int positionLine = 0;
 
         while (positionLine < src.length()) {

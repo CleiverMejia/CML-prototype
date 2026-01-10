@@ -53,6 +53,8 @@ public class Parser {
                     block.add(function());
                 case RETURN ->
                     block.add(returnL());
+                case CLASS ->
+                    block.add(classL());
                 default -> {
                 }
             }
@@ -241,5 +243,12 @@ public class Parser {
         Expr result = getExpr();
 
         return new ReturnStmt(result);
+    }
+
+    private ClassStmt classL() {
+        String className = tokens.get(pos++).string;
+        Block body = getBlock();
+
+        return new ClassStmt(new ClassExpr(className, body));
     }
 }

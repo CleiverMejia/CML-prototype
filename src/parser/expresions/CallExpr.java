@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import parser.Block;
 import parser.interfaces.Expr;
+import parser.interfaces.Oper;
 
 public class CallExpr implements Expr {
 
@@ -19,14 +20,24 @@ public class CallExpr implements Expr {
 
     public Block getBody() {
         FuncExpr func = (FuncExpr) Frame.get(name);
+        Frame.createArgScope();
 
         for (int i = 0; i < func.getArgs().size(); i++) {
             Expr curArg = args.get(i);
-            if (curArg instanceof VarExpr varExpr) {
-                curArg = Frame.get(varExpr.getName());
+
+            if (curArg instanceof CallExpr argCall) {
+                curArg = argCall.get();
             }
 
-            Frame.put(func.getArgs().get(i), curArg);
+            if (curArg instanceof VarExpr argVar) {
+                curArg = Frame.get(argVar.getName());
+            }
+
+            if (curArg instanceof Oper argOper) {
+                curArg = argOper.get();
+            }
+
+            Frame.putArg(func.getArgs().get(i), curArg);
         }
 
         return func.getBody();
@@ -39,7 +50,13 @@ public class CallExpr implements Expr {
     @Override
     public Expr get() {
         Interpreter.run(getBody());
+        Frame.popArg();
 
         return Frame.getReturn();
+    }
+
+    @Override
+    public String toString() {
+        return get() + "";
     }
 }

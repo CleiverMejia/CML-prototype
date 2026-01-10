@@ -33,6 +33,14 @@ public class MinusExpr implements Oper {
             rightTemp = rightCall.get();
         }
 
+        // Variables
+        if (leftTemp instanceof VarExpr leftVar) {
+            leftTemp = Frame.get(leftVar.getName());
+        }
+        if (rightTemp instanceof VarExpr rightVar) {
+            rightTemp = Frame.get(rightVar.getName());
+        }
+
         // Operations
         if (leftTemp instanceof Oper leftOp) {
             leftTemp = leftOp.get();
@@ -49,14 +57,6 @@ public class MinusExpr implements Oper {
             rightTemp = rightOp.get();
         }
 
-        // Variables
-        if (leftTemp instanceof VarExpr leftVar) {
-            leftTemp = Frame.get(leftVar.getName());
-        }
-        if (rightTemp instanceof VarExpr rightVar) {
-            rightTemp = Frame.get(rightVar.getName());
-        }
-
         // Number or String
         Float leftNumber = (leftTemp instanceof NumberExpr lNum) ? lNum.value : null;
         String leftString = (leftTemp instanceof StringExpr lStr) ? lStr.text : null;
@@ -71,7 +71,7 @@ public class MinusExpr implements Oper {
             return new NumberExpr(leftNumber - rightNumber);
         }
         if (leftNumber != null && rightString != null) {
-            return new NumberExpr(leftNumber - Integer.valueOf(rightString));
+            return new NumberExpr(leftNumber - Float.valueOf(rightString));
         }
         if (leftNumber != null && rightBoolean != null) {
             return new NumberExpr(leftNumber - (rightBoolean ? 1 : 0));

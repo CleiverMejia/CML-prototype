@@ -74,17 +74,45 @@ public Print() {
         @Override
         public void exec() {
             Expr expr = Frame.get("text");
-            System.out.println(expr);
+            if (expr != null) {
+                String text = expr.toString()
+                    .replace("\\\\", "\\")
+                    .replace("\\n", "\n")
+                    .replace("\\t", "\t")
+                    .replace("\\r", "\r")
+                    .replace("\\b", "\b")
+                    .replace("\\f", "\f")
+                    .replace("\\\"", "\"")
+                    .replace("\\'", "'");
+
+                System.out.println(text);
+                return;
+            }
+
+            System.out.println("");
         }
     });
-
-    FuncExpr function = new FuncExpr("print", block, "text");
-
-    setFunction(function);
 }
 ```
 
 ^ This is the implementation of the print function
+
+- **Imports**, Other codes can be imported
+
+```
+// sum.cml
+
+function sum(a, b) {
+    return a + b;
+}
+
+// main.cml
+
+import "sum.cml";
+
+print(sum(2, 3)); // > 5
+
+```
 
 ## Note
 

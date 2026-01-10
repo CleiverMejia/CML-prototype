@@ -1,6 +1,5 @@
 package parser.expresions;
 
-import interpreter.Interpreter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -34,11 +33,6 @@ public class FuncExpr implements Expr {
 
     public Block getBody() {
         return body;
-    }
-
-    public Expr getReturn() {
-        Interpreter.run(body);
-        return null;
     }
 
     @Override

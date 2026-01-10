@@ -71,7 +71,7 @@ public class GreaterComp implements Comp {
             return new BoolExpr(leftNumber.value > rightNumber.value);
         }
         if (leftNumber != null && rightString != null) {
-            return new BoolExpr(leftNumber.value > Integer.parseInt(rightString));
+            return new BoolExpr(leftNumber.value > Float.parseFloat(rightString));
         }
         if (leftNumber != null && rightBoolean != null) {
             return new BoolExpr(leftNumber.value > (rightBoolean ? 1 : 0));

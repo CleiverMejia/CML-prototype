@@ -15,13 +15,8 @@ public class FunctionStmt implements Stmt {
         this.func = function;
     }
 
-    public void setName(String funcName) {
-        this.funcName = funcName;
-    }
-
     public void setFunction(FuncExpr func) {
-        setName(func.getName());
-
+        this.funcName = func.getName();
         this.func = func;
     }
 
