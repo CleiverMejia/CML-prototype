@@ -97,6 +97,29 @@ public Print() {
 
 ^ This is the implementation of the print function
 
+- **Class and Objects**
+
+```
+class Point {
+    x = 0
+    y = 0
+
+    function Point(nX, nY) {
+        x = nX;
+        y = nY;
+    }
+
+    function toString() {
+        return "x: " + x + ", y: " + y;
+    }
+}
+
+a = new Point(1, 2);
+b = new Point(3, 4);
+
+print(a.toString()); // > x: 1.0, y: 2.0
+print(b.toString()); // > x: 3.0, y: 4.0
+```
 - **Imports**, Other codes can be imported
 
 ```
@@ -111,7 +134,6 @@ function sum(a, b) {
 import "sum.cml";
 
 print(sum(2, 3)); // > 5
-
 ```
 
 ## Note
@@ -119,3 +141,4 @@ print(sum(2, 3)); // > 5
 - Expressions have no type precedence except for parentheses; all are read from left to right
 - The not(!) comparison is included and referenced in the code but is not yet available for use
 - The functions must be defined before they are used
+- There are very few exception handling options, so doing things not allowed in the language will cause undefined errors.

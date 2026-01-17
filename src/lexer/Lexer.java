@@ -21,7 +21,7 @@ public class Lexer {
         List<String> lines = Files.readAllLines(Path.of(filePath));
 
         for (int i = 0; i < lines.size(); i++) {
-             if (lines.get(i).trim().matches("import \"(.*)\";")) {
+            if (lines.get(i).trim().matches("import \"(.*)\";?")) {
                 String sep[] = lines.get(i).split("\"");
 
                 lines.remove(i);
@@ -81,7 +81,8 @@ public class Lexer {
                 while (positionLine < src.length()
                         && (Character.isLetter(src.charAt(positionLine))
                         || Character.isDigit(src.charAt(positionLine))
-                        || src.charAt(positionLine) == '_')) {
+                        || src.charAt(positionLine) == '_'
+                        || src.charAt(positionLine) == '.')) {
                     positionLine++;
                 }
 
@@ -178,6 +179,10 @@ public class Lexer {
             }
 
             positionLine++;
+        }
+
+        if (src.length() != 0) {
+            tokens.add(new Token(TokenType.EOF, '\0'));
         }
     }
 

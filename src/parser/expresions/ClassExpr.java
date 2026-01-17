@@ -1,7 +1,7 @@
 package parser.expresions;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import parser.Block;
 import parser.interfaces.Expr;
 import parser.interfaces.Stmt;
@@ -10,19 +10,30 @@ import parser.statements.FunctionStmt;
 
 public class ClassExpr implements Expr {
     private final String name;
-    private final List<AssignStmt> parameters = new ArrayList<>();
-    private final List<FunctionStmt> methods = new ArrayList<>();
+    private final Map<String, Expr> declarations = new HashMap<>();
+    private final Block body = new Block();
 
     public ClassExpr(String name, Block body) {
         this.name = name;
 
+        FunctionStmt constructor = new FunctionStmt(
+            new FuncExpr(name, new Block())
+        );
+
+        this.declarations.put(name, constructor.getFunction());
+        this.body.add(constructor);
+
         for (Stmt stmt : body) {
             if (stmt instanceof AssignStmt assignStmt) {
-                this.parameters.add(assignStmt);
+                this.declarations.put(assignStmt.getName(), assignStmt.getValue());
             }
 
             if (stmt instanceof FunctionStmt functionStmt) {
-                this.methods.add(functionStmt);
+                this.declarations.put(functionStmt.getName(), functionStmt.getFunction());
+            }
+
+            if (stmt instanceof AssignStmt || stmt instanceof FunctionStmt) {
+                this.body.add(stmt);
             }
         }
     }
@@ -36,17 +47,16 @@ public class ClassExpr implements Expr {
         return name;
     }
 
+    public ObjExpr getObject()  {
+        return new ObjExpr(name, new HashMap<>(declarations));
+    }
+
     public Block getBody() {
-        Block body = new Block();
-
-        body.addAll(parameters);
-        body.addAll(methods);
-
         return body;
     }
 
     @Override
     public String toString() {
-        return "Class!";
+        return "Class<" + name + ">";
     }
 }

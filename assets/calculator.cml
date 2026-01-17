@@ -1,0 +1,24 @@
+class Calculator {
+    msg = "";
+
+    function Calculator() {
+        msg = "constructor!"
+    }
+
+    function sum(a, b) {
+        print(msg)
+        return a + b;
+    }
+
+    function rest(a, b) {
+        return a - b;
+    }
+
+    function mult(a, b) {
+        return a * b;
+    }
+
+    function division(a, b) {
+        return a / b;
+    }
+}

@@ -1,0 +1,13 @@
+class Point {
+    x = 0
+    y = 0
+
+    function Point(nX, nY) {
+        x = nX;
+        y = nY;
+    }
+
+    function toString() {
+        return "x: " + x + ", y: " + y;
+    }
+}

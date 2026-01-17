@@ -1,3 +1,7 @@
-import "sum.cml";
+import "point.cml";
 
-print(sum(2, 3));
+a = new Point(1, 2);
+b = new Point(3, 4);
+
+print(a.toString());
+print(b.toString())

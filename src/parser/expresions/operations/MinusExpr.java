@@ -16,7 +16,7 @@ public class MinusExpr implements Oper {
     private final Expr right;
 
     public MinusExpr(Expr left, Expr right) {
-        this.left = left;
+        this.left = (left == null) ? NumberExpr.ZERO : left;
         this.right = right;
     }
 

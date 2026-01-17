@@ -20,4 +20,9 @@ public class WhileStmt implements Stmt {
     public Block getBody() {
         return body;
     }
+
+    @Override
+    public String toString() {
+        return "Stmt<While>";
+    }
 }

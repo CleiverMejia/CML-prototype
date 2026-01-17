@@ -1,5 +1,6 @@
 package parser.statements;
 
+import enums.SymbolKind;
 import interpreter.Frame;
 import parser.expresions.CallExpr;
 import parser.expresions.VarExpr;
@@ -9,16 +10,20 @@ import parser.interfaces.Stmt;
 
 public class AssignStmt implements Stmt {
 
-    private final VarExpr varName;
+    private final VarExpr var;
     private final Expr expr;
 
-    public AssignStmt(VarExpr varName, Expr expr) {
-        this.varName = varName;
+    public AssignStmt(VarExpr var, Expr expr) {
+        this.var = var;
         this.expr = expr;
     }
 
+    public void setKind(SymbolKind symbolKind) {
+        var.setKind(symbolKind);
+    }
+
     public String getName() {
-        return varName.getName();
+        return var.getName();
     }
 
     public Expr getValue() {
@@ -37,8 +42,12 @@ public class AssignStmt implements Stmt {
         return expr;
     }
 
+    public SymbolKind getKind() {
+        return var.getKind();
+    }
+
     @Override
     public String toString() {
-        return varName + " = " + expr.get();
+        return "Stmt<Assign>";
     }
 }

@@ -1,17 +1,16 @@
 package parser.expresions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import parser.Block;
 import parser.interfaces.Expr;
 
 public class FuncExpr implements Expr {
-    private final List<String> args;
+    private List<VarExpr> args = new ArrayList<>();
     private final Block body;
     private final String name;
 
-    public FuncExpr(String name, ArrayList<String> args, Block body) {
+    public FuncExpr(String name, ArrayList<VarExpr> args, Block body) {
         this.name = name;
         this.args = args;
         this.body = body;
@@ -19,15 +18,18 @@ public class FuncExpr implements Expr {
 
     public FuncExpr(String name, Block body, String... args) {
         this.name = name;
-        this.args = new ArrayList<>(Arrays.asList(args));
         this.body = body;
+
+        for (String arg : args) {
+            this.args.add(new VarExpr(arg));
+        }
     }
 
     public String getName() {
         return name;
     }
 
-    public List<String> getArgs() {
+    public List<VarExpr> getArgs() {
         return args;
     }
 
@@ -42,6 +44,6 @@ public class FuncExpr implements Expr {
 
     @Override
     public String toString() {
-        return "Function!";
+        return "Function<" + name + ">";
     }
 }

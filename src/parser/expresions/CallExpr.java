@@ -1,5 +1,6 @@
 package parser.expresions;
 
+import enums.SymbolKind;
 import interpreter.Frame;
 import interpreter.Interpreter;
 import java.util.ArrayList;
@@ -19,25 +20,40 @@ public class CallExpr implements Expr {
     }
 
     public Block getBody() {
-        FuncExpr func = (FuncExpr) Frame.get(name);
-        Frame.createArgScope();
+        Expr expr = Frame.get(name);
+
+        FuncExpr func = null;
+        if (expr instanceof VarExpr varExpr) {
+            func = (FuncExpr) Frame.get(varExpr.getName());
+        }
+
+        if (expr instanceof FuncExpr funcExpr) {
+            func = funcExpr;
+        }
+
+        if (func == null) {
+            Frame.getSelf();
+            throw new Error(name + " is not a function, " + (expr != null ? expr.getClass() : "null"));
+        }
 
         for (int i = 0; i < func.getArgs().size(); i++) {
-            Expr curArg = args.get(i);
+            Expr exprArg = args.get(i);
+            String arg = func.getArgs().get(i).getName();
+            SymbolKind kind = func.getArgs().get(i).getKind();
 
-            if (curArg instanceof CallExpr argCall) {
-                curArg = argCall.get();
+            if (exprArg instanceof CallExpr argCall) {
+                exprArg = argCall.get();
             }
 
-            if (curArg instanceof VarExpr argVar) {
-                curArg = Frame.get(argVar.getName());
+            if (exprArg instanceof VarExpr argVar) {
+                exprArg = Frame.get(argVar.getName());
             }
 
-            if (curArg instanceof Oper argOper) {
-                curArg = argOper.get();
+            if (exprArg instanceof Oper argOper) {
+                exprArg = argOper.get();
             }
 
-            Frame.putArg(func.getArgs().get(i), curArg);
+            Frame.put(arg, exprArg, kind);
         }
 
         return func.getBody();
@@ -49,8 +65,9 @@ public class CallExpr implements Expr {
 
     @Override
     public Expr get() {
+        Frame.createScope();
         Interpreter.run(getBody());
-        Frame.popArg();
+        Frame.pop();
 
         return Frame.getReturn();
     }
