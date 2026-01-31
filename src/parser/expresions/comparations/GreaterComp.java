@@ -1,6 +1,6 @@
 package parser.expresions.comparations;
 
-import interpreter.Frame;
+import interpreter.CallStack;
 import parser.expresions.BoolExpr;
 import parser.expresions.CallExpr;
 import parser.expresions.NumberExpr;
@@ -51,10 +51,10 @@ public class GreaterComp implements Comp {
 
         // Variables
         if (leftTemp instanceof VarExpr leftVar) {
-            leftTemp = Frame.get(leftVar.getName());
+            leftTemp = CallStack.resolve(leftVar.getName());
         }
         if (rightTemp instanceof VarExpr rightVar) {
-            rightTemp = Frame.get(rightVar.getName());
+            rightTemp = CallStack.resolve(rightVar.getName());
         }
 
         // Number or String

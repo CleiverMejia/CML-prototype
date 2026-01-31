@@ -1,6 +1,6 @@
-package lib;
+package lib.print;
 
-import interpreter.Frame;
+import interpreter.CallStack;
 import parser.Block;
 import parser.expresions.FuncExpr;
 import parser.interfaces.Expr;
@@ -13,7 +13,8 @@ public class Print extends FunctionStmt {
         Block block = new Block(new ExternStmt() {
             @Override
             public void exec() {
-                Expr expr = Frame.get("text");
+                Expr expr = CallStack.resolveArg("text");
+
                 if (expr != null) {
                     String text = expr.toString()
                             .replace("\\\\", "\\")

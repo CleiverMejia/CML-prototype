@@ -12,7 +12,7 @@ import parser.statements.*;
 
 public class Parser {
 
-    private final Block mainBlock = new Block(new Print());
+    private final Block mainBlock = new Core();
     private final ArrayList<Token> tokens;
     private Token tok;
     private int pos = 0;
@@ -71,7 +71,7 @@ public class Parser {
                 case EOF ->
                     consume(TokenType.EOF);
                 default -> {
-                    System.out.println(tok + " " + tokens.get(pos-1));
+                    System.out.println(tok + " " + tokens.get(pos - 1));
                 }
             }
         }
@@ -94,6 +94,7 @@ public class Parser {
 
         if (tok.type == TokenType.IDENT) {
             String name = consume(TokenType.IDENT).string;
+            Expr var = new VarExpr(name);
 
             switch (tok.type) {
                 case LPARENT -> {
@@ -104,12 +105,43 @@ public class Parser {
                         args.add(getExpr());
                     }
 
-                    return new CallExpr(name, args);
+                    return new CallExpr(var, args);
+                }
+                case DOT -> {
+                    consume(TokenType.DOT);
+                    String fieldName = consume(TokenType.IDENT).string;
+
+                    FieldExpr field = new FieldExpr(new VarExpr(name), new VarExpr(fieldName));
+
+                    if (tok.type == TokenType.LPARENT) {
+                        consume(TokenType.LPARENT);
+                        ArrayList<Expr> args = new ArrayList<>();
+
+                        while (tok.type != TokenType.SEMICOLON && tok.type != TokenType.EOF) {
+                            args.add(getExpr());
+                        }
+
+                        return new CallExpr(field, args);
+                    }
+
+                    return field;
                 }
                 default -> {
                     return new VarExpr(name);
                 }
             }
+        }
+
+        if (tok.type == TokenType.LBRACKET) {
+            consume(TokenType.LBRACKET);
+
+            ArrayList<Expr> exprs = new ArrayList<>();
+
+            while (tok.type != TokenType.SEMICOLON && tok.type != TokenType.EOF) {
+                exprs.add(getExpr());
+            }
+
+            return new ArrayExpr(exprs);
         }
 
         return null;
@@ -131,7 +163,8 @@ public class Parser {
                     || tokenType == TokenType.RPARENT
                     || tokenType == TokenType.LBRACE
                     || tokenType == TokenType.COMMA
-                    || tokenType == TokenType.EOF) {
+                    || tokenType == TokenType.EOF
+                    || tokenType == TokenType.RBRACKET) {
                 consume(tokenType);
                 break;
             }
@@ -206,6 +239,14 @@ public class Parser {
 
     private Stmt ident() {
         String name = consume(TokenType.IDENT).string;
+        Expr var = new VarExpr(name);
+
+        if (tok.type == TokenType.DOT) {
+            consume(TokenType.DOT);
+
+            String field = consume(TokenType.IDENT).string;
+            var = new FieldExpr(new VarExpr(name), new VarExpr(field));
+        }
 
         if (tok.type == TokenType.ASSIGN) {
             consume(TokenType.ASSIGN);
@@ -215,21 +256,21 @@ public class Parser {
                 return instance(name);
             }
 
-            return assign(name);
+            return assign(var);
         }
 
         if (tok.type == TokenType.LPARENT) {
             consume(TokenType.LPARENT);
-            return call(name);
+            return call(var);
         }
 
         throw new Error("Misused identifier");
     }
 
-    private AssignStmt assign(String name) {
+    private AssignStmt assign(Expr name) {
         Expr expr = getExpr();
 
-        return new AssignStmt(new VarExpr(name), expr);
+        return new AssignStmt(name, expr);
     }
 
     private IfStmt ifL() {
@@ -239,6 +280,7 @@ public class Parser {
 
         if (pos < tokens.size() && tok.type == TokenType.ELSE) {
             consume(TokenType.ELSE);
+            consume(TokenType.LBRACE);
             Block elseBody = getBlock();
 
             return new IfStmt(condition, body, elseBody);
@@ -282,15 +324,16 @@ public class Parser {
         return new FunctionStmt(new FuncExpr(funcName, arg, body));
     }
 
-    private CallStmt call(String funcName) {
+    private CallStmt call(Expr funcName) {
         ArrayList<Expr> args = new ArrayList<>();
 
         while (tok.type != TokenType.SEMICOLON && tok.type != TokenType.EOF) {
-            args.add(getExpr());
-
-            if (tok.type == TokenType.IDENT) {
-                throw new Error("Close the function with a semicolon");
+            if (tok.type == TokenType.EOF) {
+                consume(TokenType.EOF);
+                continue;
             }
+
+            args.add(getExpr());
         }
 
         if (tok.type == TokenType.SEMICOLON) {
@@ -318,10 +361,13 @@ public class Parser {
 
     private InstanceStmt instance(String name) {
         CallExpr classConstructor = (CallExpr) getDataType();
+        String className = classConstructor.getName();
+        classConstructor.setConstructor(name);
+
         if (tok.type == TokenType.SEMICOLON) {
             consume(TokenType.SEMICOLON);
         }
 
-        return new InstanceStmt(new VarExpr(name), classConstructor);
+        return new InstanceStmt(new VarExpr(name), classConstructor, className);
     }
 }

@@ -1,12 +1,10 @@
 package parser.expresions;
 
-import enums.SymbolKind;
-import interpreter.Frame;
+import interpreter.CallStack;
 import parser.interfaces.Expr;
 
 public class VarExpr implements Expr {
     private final String name;
-    private SymbolKind kind;
 
     public VarExpr(String name) {
         this.name = name;
@@ -16,14 +14,6 @@ public class VarExpr implements Expr {
         return name;
     }
 
-    public SymbolKind getKind() {
-        return kind;
-    }
-
-    public void setKind(SymbolKind kind) {
-        this.kind = kind;
-    }
-
     @Override
     public Expr get() {
         return null;
@@ -31,6 +21,6 @@ public class VarExpr implements Expr {
 
     @Override
     public String toString() {
-        return Frame.get(name) + "";
+        return CallStack.resolve(name) + "";
     }
 }

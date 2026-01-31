@@ -1,10 +1,7 @@
 
-import java.util.Date;
-
 import interpreter.Interpreter;
 import lexer.Lexer;
 import parser.Parser;
-import semantic.Semantic;
 
 public class App {
 
@@ -16,14 +13,11 @@ public class App {
         Lexer lexer = new Lexer(args[0]); */
 
         long inicio = System.nanoTime();
-        Lexer lexer = new Lexer("./assets/helloWorld.cml");
+        Lexer lexer = new Lexer("./examples/helloWorld.cml");
         lexer.run();
 
         Parser parser = new Parser(lexer.getTokens());
         parser.run();
-
-        Semantic semantic = new Semantic();
-        semantic.run(parser.getMain());
 
         Interpreter.run(parser.getMain());
 
@@ -31,6 +25,6 @@ public class App {
         long duracionNs = fin - inicio;
         double duracionMs = duracionNs / 1_000_000.0;
 
-        System.out.println("Tiempo: " + duracionMs + " ms");
+        System.out.println("time: " + duracionMs + " ms");
     }
 }

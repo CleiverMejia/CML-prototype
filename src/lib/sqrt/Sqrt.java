@@ -1,6 +1,6 @@
-package lib;
+package lib.sqrt;
 
-import interpreter.Frame;
+import interpreter.CallStack;
 import parser.Block;
 import parser.expresions.FuncExpr;
 import parser.expresions.NumberExpr;
@@ -13,9 +13,9 @@ public class Sqrt extends FunctionStmt {
         Block block = new Block(new ExternStmt() {
             @Override
             public void exec() {
-                NumberExpr a = (NumberExpr) Frame.get("a");
+                float a = resolveArgNumber("a");
 
-                Frame.setReturn(new NumberExpr((float) Math.sqrt(a.value)));
+                CallStack.setReturn(new NumberExpr((float) Math.sqrt(a)));
             }
         });
 

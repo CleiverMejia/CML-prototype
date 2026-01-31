@@ -1,5 +1,6 @@
 package parser.expresions;
 
+import interpreter.Scope;
 import java.util.ArrayList;
 import java.util.List;
 import parser.Block;
@@ -9,6 +10,7 @@ public class FuncExpr implements Expr {
     private List<VarExpr> args = new ArrayList<>();
     private final Block body;
     private final String name;
+    public Scope parentScope = null;
 
     public FuncExpr(String name, ArrayList<VarExpr> args, Block body) {
         this.name = name;
@@ -35,6 +37,10 @@ public class FuncExpr implements Expr {
 
     public Block getBody() {
         return body;
+    }
+
+    public void setScope(Scope parent) {
+        this.parentScope = parent;
     }
 
     @Override

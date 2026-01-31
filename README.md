@@ -66,60 +66,68 @@ c = sum(2+3) // > 5
 print("Hello world!"); // > Hello world!
 ```
 
-- **Extern**, encoding outside of language. to implement functions with behaviors defined from Java
+- **Extern**, encoding outside of language. to implement functions or classes with behaviors defined from Java
 
 ```java
-public Print() {
+public Sqrt() {
     Block block = new Block(new ExternStmt() {
         @Override
         public void exec() {
-            Expr expr = Frame.get("text");
-            if (expr != null) {
-                String text = expr.toString()
-                    .replace("\\\\", "\\")
-                    .replace("\\n", "\n")
-                    .replace("\\t", "\t")
-                    .replace("\\r", "\r")
-                    .replace("\\b", "\b")
-                    .replace("\\f", "\f")
-                    .replace("\\\"", "\"")
-                    .replace("\\'", "'");
+            float a = resolveArgNumber("a");
 
-                System.out.println(text);
-                return;
-            }
-
-            System.out.println("");
+            CallStack.setReturn(new NumberExpr((float) Math.sqrt(a)));
         }
     });
+
+    FuncExpr function = new FuncExpr("sqrt", block, "a");
+
+    setFunction(function);
 }
 ```
 
-^ This is the implementation of the print function
+^ This is the implementation of the sqrt function
+
+```java
+public Http() {
+    Block block = new Block(
+            new Get(),
+            new Listen()
+    );
+
+    ClassExpr clss = new ClassExpr("Http", block);
+
+    setClss(clss);
+}
+```
+
+^ This is implementation of the http class
 
 - **Class and Objects**
 
 ```
-class Point {
-    x = 0
-    y = 0
-
-    function Point(nX, nY) {
-        x = nX;
-        y = nY;
+class Calculator {
+    function sum(a, b) {
+        return a + b;
     }
 
-    function toString() {
-        return "x: " + x + ", y: " + y;
+    function rest(a, b) {
+        return a - b;
+    }
+
+    function mult(a, b) {
+        return a * b;
+    }
+
+    function division(a, b) {
+        return a / b;
     }
 }
 
-a = new Point(1, 2);
-b = new Point(3, 4);
+calc = new Calculator();
 
-print(a.toString()); // > x: 1.0, y: 2.0
-print(b.toString()); // > x: 3.0, y: 4.0
+print(calc.sum(1, 2)); // > 3
 ```
+
 - **Imports**, Other codes can be imported
 
 ```
@@ -140,5 +148,5 @@ print(sum(2, 3)); // > 5
 
 - Expressions have no type precedence except for parentheses; all are read from left to right
 - The not(!) comparison is included and referenced in the code but is not yet available for use
-- The functions must be defined before they are used
+- The functions and classes must be defined before they are used
 - There are very few exception handling options, so doing things not allowed in the language will cause undefined errors.

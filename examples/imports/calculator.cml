@@ -1,12 +1,5 @@
 class Calculator {
-    msg = "";
-
-    function Calculator() {
-        msg = "constructor!"
-    }
-
     function sum(a, b) {
-        print(msg)
         return a + b;
     }
 

@@ -1,0 +1,6 @@
+import "calculator.cml";
+
+calc = new Calculator();
+result = calc.sum(2, 3);
+
+print(result);

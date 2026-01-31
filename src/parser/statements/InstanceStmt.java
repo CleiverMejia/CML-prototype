@@ -1,6 +1,5 @@
 package parser.statements;
 
-import enums.SymbolKind;
 import parser.expresions.CallExpr;
 import parser.expresions.VarExpr;
 import parser.interfaces.Stmt;
@@ -8,15 +7,12 @@ import parser.interfaces.Stmt;
 public class InstanceStmt implements Stmt {
     private final VarExpr obj;
     private final CallExpr classConstructor;
-    private SymbolKind kind;
+    private final String className;
 
-    public InstanceStmt(VarExpr obj, CallExpr classConstructor) {
+    public InstanceStmt(VarExpr obj, CallExpr classConstructor, String className) {
         this.obj = obj;
         this.classConstructor = classConstructor;
-    }
-
-    public void setKind(SymbolKind kind) {
-        this.kind = kind;
+        this.className = className;
     }
 
     public String getObjName() {
@@ -24,15 +20,11 @@ public class InstanceStmt implements Stmt {
     }
 
     public String getClassName() {
-        return classConstructor.getName();
+        return className;
     }
 
     public CallExpr getConstructor() {
         return classConstructor;
-    }
-
-    public SymbolKind getKind() {
-        return kind;
     }
 
     @Override

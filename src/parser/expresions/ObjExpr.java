@@ -4,6 +4,7 @@ import java.util.Map;
 import parser.interfaces.Expr;
 
 public class ObjExpr implements Expr {
+
     private final String name;
     private final Map<String, Expr> declarations;
 
@@ -18,6 +19,14 @@ public class ObjExpr implements Expr {
 
     public Expr getDeclaration(String field) {
         return declarations.get(field);
+    }
+
+    public Expr resolve(String name) {
+        return declarations.get(name);
+    }
+
+    public void define(String name, Expr expr) {
+        declarations.put(name, expr);
     }
 
     @Override

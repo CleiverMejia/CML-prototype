@@ -1,6 +1,6 @@
 package parser.statements;
 
-import interpreter.Frame;
+import interpreter.CallStack;
 import parser.expresions.BoolExpr;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
@@ -18,7 +18,7 @@ public class ReturnStmt implements Stmt {
 
     public Expr getExpr() {
         if (expr instanceof VarExpr varExpr) {
-            expr = Frame.get(varExpr.getName());
+            expr = CallStack.resolve(varExpr.getName());
         }
 
         if (expr instanceof NumberExpr || expr instanceof StringExpr || expr instanceof BoolExpr) {

@@ -4,6 +4,7 @@ import enums.TokenType;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -14,18 +15,21 @@ public class Lexer {
     private final ArrayList<Token> tokens = new ArrayList<>();
 
     public Lexer(String filePath) throws IOException {
-        doc = getFile(filePath).iterator();
+        String pathBase = Paths.get(filePath).getParent().toString();
+        String filePath2 = Paths.get(filePath).getFileName().toString();
+
+        doc = getFile(pathBase, filePath2).iterator();
     }
 
-    private List<String> getFile(String filePath) throws IOException {
-        List<String> lines = Files.readAllLines(Path.of(filePath));
+    private List<String> getFile(String pathBase, String filePath) throws IOException {
+        List<String> lines = Files.readAllLines(Path.of(String.format("%s/%s", pathBase, filePath)));
 
         for (int i = 0; i < lines.size(); i++) {
             if (lines.get(i).trim().matches("import \"(.*)\";?")) {
                 String sep[] = lines.get(i).split("\"");
 
                 lines.remove(i);
-                lines.addAll(i, getFile("./assets/" + sep[1]));
+                lines.addAll(i, getFile(pathBase, sep[1]));
             }
         }
 
@@ -81,8 +85,7 @@ public class Lexer {
                 while (positionLine < src.length()
                         && (Character.isLetter(src.charAt(positionLine))
                         || Character.isDigit(src.charAt(positionLine))
-                        || src.charAt(positionLine) == '_'
-                        || src.charAt(positionLine) == '.')) {
+                        || src.charAt(positionLine) == '_')) {
                     positionLine++;
                 }
 
@@ -103,6 +106,8 @@ public class Lexer {
             switch (character) {
                 case ',' ->
                     tokens.add(new Token(TokenType.COMMA, ","));
+                case '.' ->
+                    tokens.add(new Token(TokenType.DOT, "."));
                 case '(' ->
                     tokens.add(new Token(TokenType.LPARENT, "("));
                 case ')' ->
@@ -127,6 +132,10 @@ public class Lexer {
                     tokens.add(new Token(TokenType.LBRACE, "{"));
                 case '}' ->
                     tokens.add(new Token(TokenType.RBRACE, "}"));
+                case '[' ->
+                    tokens.add(new Token(TokenType.LBRACKET, "["));
+                case ']' ->
+                    tokens.add(new Token(TokenType.RBRACKET, "]"));
                 case '<' -> {
                     if (src.charAt(positionLine + 1) == '=') {
                         tokens.add(new Token(TokenType.LESSEQUAL, "<="));

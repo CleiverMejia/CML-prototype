@@ -1,6 +1,5 @@
 package parser.statements;
 
-import enums.SymbolKind;
 import parser.Block;
 import parser.expresions.ClassExpr;
 import parser.interfaces.Stmt;
@@ -8,7 +7,6 @@ import parser.interfaces.Stmt;
 public class ClassStmt implements Stmt{
     private String name = null;
     private ClassExpr clss = null;
-    private SymbolKind kind;
 
     public ClassStmt() {}
 
@@ -22,10 +20,6 @@ public class ClassStmt implements Stmt{
         this.clss = clss;
     }
 
-    public void setKind(SymbolKind kind) {
-        this.kind = kind;
-    }
-
     public String getName() {
         return name;
     }
@@ -36,10 +30,6 @@ public class ClassStmt implements Stmt{
 
     public ClassExpr getClss() {
         return clss;
-    }
-
-    public SymbolKind getKind() {
-        return kind;
     }
 
     @Override

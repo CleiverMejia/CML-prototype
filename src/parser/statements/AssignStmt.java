@@ -1,8 +1,8 @@
 package parser.statements;
 
-import enums.SymbolKind;
-import interpreter.Frame;
+import interpreter.CallStack;
 import parser.expresions.CallExpr;
+import parser.expresions.FieldExpr;
 import parser.expresions.VarExpr;
 import parser.interfaces.Expr;
 import parser.interfaces.Oper;
@@ -10,20 +10,20 @@ import parser.interfaces.Stmt;
 
 public class AssignStmt implements Stmt {
 
-    private final VarExpr var;
+    private final Expr var;
     private final Expr expr;
 
-    public AssignStmt(VarExpr var, Expr expr) {
+    public AssignStmt(Expr var, Expr expr) {
         this.var = var;
         this.expr = expr;
     }
 
-    public void setKind(SymbolKind symbolKind) {
-        var.setKind(symbolKind);
-    }
-
     public String getName() {
-        return var.getName();
+        if (var instanceof VarExpr varExpr) {
+            return varExpr.getName();
+        }
+
+        return null;
     }
 
     public Expr getValue() {
@@ -32,7 +32,7 @@ public class AssignStmt implements Stmt {
         }
 
         if (expr instanceof VarExpr exprVar) {
-            return Frame.get(exprVar.getName());
+            return CallStack.resolve(exprVar.getName());
         }
 
         if (expr instanceof CallExpr exprCall) {
@@ -42,8 +42,14 @@ public class AssignStmt implements Stmt {
         return expr;
     }
 
-    public SymbolKind getKind() {
-        return var.getKind();
+    public void exec() {
+        if (var instanceof VarExpr varExpr) {
+            CallStack.define(varExpr.getName(), getValue());
+        }
+
+        if (var instanceof FieldExpr fieldExpr) {
+            fieldExpr.define(getValue());
+        }
     }
 
     @Override

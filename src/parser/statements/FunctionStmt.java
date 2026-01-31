@@ -1,6 +1,6 @@
 package parser.statements;
 
-import enums.SymbolKind;
+import interpreter.Scope;
 import java.util.List;
 import parser.Block;
 import parser.expresions.FuncExpr;
@@ -10,13 +10,16 @@ import parser.interfaces.Stmt;
 public class FunctionStmt implements Stmt {
     private String funcName = null;
     private FuncExpr func = null;
-    private SymbolKind kind;
 
     public FunctionStmt() {}
 
     public FunctionStmt(FuncExpr function) {
         this.funcName = function.getName();
         this.func = function;
+    }
+
+    public void setScope(Scope parent) {
+        func.setScope(parent);
     }
 
     public void setFunction(FuncExpr func) {
@@ -26,10 +29,6 @@ public class FunctionStmt implements Stmt {
 
     public void setName(String funcName) {
         this.funcName = funcName;
-    }
-
-    public void setKind(SymbolKind kind) {
-        this.kind = kind;
     }
 
     public String getName() {
@@ -46,10 +45,6 @@ public class FunctionStmt implements Stmt {
 
     public Block getBody() {
         return func.getBody();
-    }
-
-    public SymbolKind getKind() {
-        return kind;
     }
 
     @Override

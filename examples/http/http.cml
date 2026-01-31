@@ -1,0 +1,11 @@
+server = new Http();
+
+file = file("template/main.html");
+puerto = input("Ingrese el puerto: ");
+
+server.get(
+    "/", file,
+    "text/html", 200
+);
+
+server.listen(puerto);
