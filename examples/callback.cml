@@ -1,0 +1,7 @@
+function test(back) {
+    back(2.5);
+}
+
+test(function(a) {
+    print("hola" + a);
+})

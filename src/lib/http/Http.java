@@ -20,8 +20,8 @@ public class Http extends ClassStmt {
 
     public Http() {
         Block block = new Block(
-                new Get(),
-                new Listen()
+                get(),
+                listen()
         );
 
         ClassExpr clss = new ClassExpr("Http", block);
@@ -29,63 +29,57 @@ public class Http extends ClassStmt {
         setClss(clss);
     }
 
-    private class Get extends FunctionStmt {
+    private FunctionStmt get() {
+        Block block = new Block(new ExternStmt() {
+            @Override
+            public void exec() {
+                String path = resolveArgString("path");
+                String resp = resolveArgString("resp");
+                String type = resolveArgString("type");
+                int code = (int) resolveArgNumber("status");
 
-        public Get() {
-            Block block = new Block(new ExternStmt() {
-                @Override
-                public void exec() {
-                    String path = resolveArgString("path");
-                    String resp = resolveArgString("resp");
-                    String type = resolveArgString("type");
-                    int code = (int) resolveArgNumber("status");
+                pathInfos.add(new PathInfo(path, resp, type, code));
+            }
+        });
 
-                    pathInfos.add(new PathInfo(path, resp, type, code));
-                }
-            });
+        FuncExpr function = new FuncExpr("get", block, "path", "resp", "type", "status");
 
-            FuncExpr function = new FuncExpr("get", block, "path", "resp", "type", "status");
-
-            setFunction(function);
-        }
+        return new FunctionStmt(function);
     }
 
-    private class Listen extends FunctionStmt {
+    private FunctionStmt listen() {
+        Block block = new Block(new ExternStmt() {
+            @Override
+            public void exec() {
+                try {
+                    int port = (int) resolveArgNumber("port");
+                    server = HttpServer.create(new InetSocketAddress(port), 0);
 
-        public Listen() {
-            Block block = new Block(new ExternStmt() {
-                @Override
-                public void exec() {
-                    try {
-                        int port = (int) resolveArgNumber("port");
-                        server = HttpServer.create(new InetSocketAddress(port), 0);
+                    for (PathInfo pathInfo : pathInfos) {
+                        server.createContext(pathInfo.path, (HttpExchange exchange) -> {
+                            String response = pathInfo.respose;
+                            exchange.sendResponseHeaders(pathInfo.statusCode, response.length());
+                            exchange.getResponseHeaders().set("Content-Type", pathInfo.contentType + "; charset=UTF-8");
 
-                        for (PathInfo pathInfo : pathInfos) {
-                            server.createContext(pathInfo.path, (HttpExchange exchange) -> {
-                                String response = pathInfo.respose;
-                                exchange.sendResponseHeaders(pathInfo.statusCode, response.length());
-                                exchange.getResponseHeaders().set("Content-Type", pathInfo.contentType + "; charset=UTF-8");
-
-                                try (OutputStream os = exchange.getResponseBody()) {
-                                    os.write(response.getBytes());
-                                }
-                            });
-                        }
-
-                        server.setExecutor(null);
-                        server.start();
-                        System.out.printf("Servidor HTTP en http://localhost:%d\n", port);
-                    } catch (IOException e) {
-                        System.getLogger(Http.class.getName()).log(System.Logger.Level.ERROR, (String) null, e);
+                            try (OutputStream os = exchange.getResponseBody()) {
+                                os.write(response.getBytes());
+                            }
+                        });
                     }
 
+                    server.setExecutor(null);
+                    server.start();
+                    System.out.printf("Servidor HTTP en http://localhost:%d\n", port);
+                } catch (IOException e) {
+                    System.getLogger(Http.class.getName()).log(System.Logger.Level.ERROR, (String) null, e);
                 }
-            });
 
-            FuncExpr function = new FuncExpr("listen", block, "port");
+            }
+        });
 
-            setFunction(function);
-        }
+        FuncExpr function = new FuncExpr("listen", block, "port");
+
+        return new FunctionStmt(function);
     }
 
     private class PathInfo {

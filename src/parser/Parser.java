@@ -71,7 +71,7 @@ public class Parser {
                 case EOF ->
                     consume(TokenType.EOF);
                 default -> {
-                    System.out.println(tok + " " + tokens.get(pos - 1));
+                    System.out.printf("%s %s", tok, tokens.get(pos - 1));
                 }
             }
         }
@@ -126,6 +126,19 @@ public class Parser {
 
                     return field;
                 }
+                /* case COMMA -> {
+                    ArrayList<VarExpr> arg = new ArrayList<>();
+                    while (tok.type != TokenType.SEMICOLON && tok.type != TokenType.EOF && tok.type != TokenType.ARROW) {
+                        arg.add((VarExpr) getExpr());
+                    }
+
+                    consume(TokenType.ARROW);
+                    consume(TokenType.LBRACE);
+
+                    Block body = getBlock();
+
+                    return new FuncExpr("Expr", arg, body);
+                } */
                 default -> {
                     return new VarExpr(name);
                 }
@@ -142,6 +155,33 @@ public class Parser {
             }
 
             return new ArrayExpr(exprs);
+        }
+
+        if (tok.type == TokenType.FUNCTION) {
+            consume(TokenType.FUNCTION);
+
+            ArrayList<VarExpr> arg = new ArrayList<>();
+
+            if (tok.type == TokenType.LPARENT) {
+                consume(TokenType.LPARENT);
+
+                while (pos < tokens.size() && tok.type != TokenType.RPARENT) {
+                    if (tok.type == TokenType.COMMA) {
+                        consume(TokenType.COMMA);
+                        continue;
+                    }
+
+                    String argName = consume(TokenType.IDENT).string;
+                    arg.add(new VarExpr(argName));
+                }
+
+                consume(TokenType.RPARENT);
+                consume(TokenType.LBRACE);
+            }
+
+            Block body = getBlock();
+
+            return new FuncExpr("", arg, body);
         }
 
         return null;

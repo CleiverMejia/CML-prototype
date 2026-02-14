@@ -71,7 +71,9 @@ public class PlusExpr implements Oper {
             return new NumberExpr(leftNumber + rightNumber);
         }
         if (leftNumber != null && rightString != null) {
-            return new StringExpr(leftNumber + rightString);
+            return new StringExpr((leftNumber.floatValue() == leftNumber.intValue()
+                    ? String.valueOf(leftNumber.intValue())
+                    : String.valueOf(leftNumber.floatValue())) + rightString);
         }
         if (leftNumber != null && rightBoolean != null) {
             return new NumberExpr(leftNumber + (rightBoolean ? 1 : 0));
@@ -79,7 +81,10 @@ public class PlusExpr implements Oper {
 
         // String
         if (leftString != null && rightNumber != null) {
-            return new StringExpr(leftString + rightNumber);
+            return new StringExpr(leftString
+                    + (rightNumber.floatValue() == rightNumber.intValue()
+                    ? String.valueOf(rightNumber.intValue())
+                    : String.valueOf(rightNumber.floatValue())));
         }
         if (leftString != null && rightString != null) {
             return new StringExpr(leftString + rightString);

@@ -6,13 +6,14 @@ import parser.Parser;
 public class App {
 
     public static void main(String[] args) throws Exception {
-        /* if (args.length == 0) {
+        long inicio = System.nanoTime();
+
+        /*if (args.length == 0) {
             throw new Exception("Missing arguments");
         }
 
         Lexer lexer = new Lexer(args[0]); */
 
-        long inicio = System.nanoTime();
         Lexer lexer = new Lexer("./examples/helloWorld.cml");
         lexer.run();
 

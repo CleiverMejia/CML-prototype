@@ -118,7 +118,7 @@ public class CallStack {
             s = s.getParent();
         }
 
-        throw new RuntimeException("Variable not defined: " + name);
+        throw new RuntimeException(String.format("Symbol %s is not defined", name));
     }
 
     public static void callMethod(ObjExpr obj, CallExpr call) {
