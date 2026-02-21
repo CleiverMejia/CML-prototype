@@ -20,7 +20,11 @@ public class ArrayExpr implements Expr {
         return list.get(i);
     }
 
-    public void set(int i, Expr expr) {
+    public void define(int i, Expr expr) {
+        while (i > list.size() - 1) {
+            list.add(null);
+        }
+
         list.set(i, expr);
     }
 

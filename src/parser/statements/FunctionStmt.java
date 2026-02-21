@@ -49,6 +49,6 @@ public class FunctionStmt implements Stmt {
 
     @Override
     public String toString() {
-        return "Stmt<Function:" + funcName + ">";
+        return String.format("Stmt<Function:%s>", funcName);
     }
 }

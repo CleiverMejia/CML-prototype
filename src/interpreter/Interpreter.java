@@ -1,5 +1,6 @@
 package interpreter;
 
+import java.util.ArrayList;
 import parser.Block;
 import parser.expresions.BoolExpr;
 import parser.expresions.CallExpr;
@@ -9,10 +10,15 @@ import parser.statements.*;
 
 public class Interpreter {
 
+    public static String sourcePath = "";
+    public static ArrayList<String> imports = new ArrayList<>();
+
     public static void run(Block block) {
         CallStack.createScope();
+        int ind = 0;
 
-        for (Stmt stmt : block) {
+        while (ind < block.size()) {
+            Stmt stmt = block.get(ind);
 
             if (stmt instanceof AssignStmt assignStmt) {
                 assignStmt.exec();
@@ -73,6 +79,20 @@ public class Interpreter {
 
                 constructor.get();
             }
+
+            if (stmt instanceof ImportStmt importStmt) {
+                block.remove(ind);
+
+                Block importResolved = importStmt.resolve();
+
+                if (importResolved != null) {
+                    block.addAll(ind, importResolved);
+                }
+
+                continue;
+            }
+
+            ind++;
         }
 
         CallStack.closeScope();

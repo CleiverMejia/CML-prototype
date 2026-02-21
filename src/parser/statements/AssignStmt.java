@@ -1,6 +1,7 @@
 package parser.statements;
 
 import interpreter.CallStack;
+import parser.expresions.AccessExpr;
 import parser.expresions.CallExpr;
 import parser.expresions.FieldExpr;
 import parser.expresions.VarExpr;
@@ -49,6 +50,10 @@ public class AssignStmt implements Stmt {
 
         if (var instanceof FieldExpr fieldExpr) {
             fieldExpr.define(getValue());
+        }
+
+        if (var instanceof AccessExpr accessExpr) {
+            accessExpr.define(getValue());
         }
     }
 

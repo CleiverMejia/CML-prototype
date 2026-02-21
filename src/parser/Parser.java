@@ -68,6 +68,8 @@ public class Parser {
                     block.add(returnL());
                 case CLASS ->
                     block.add(classL());
+                case IMPORT ->
+                    block.add(importL());
                 case EOF ->
                     consume(TokenType.EOF);
                 default -> {
@@ -125,6 +127,14 @@ public class Parser {
                     }
 
                     return field;
+                }
+                case LBRACKET -> {
+                    consume(TokenType.LBRACKET);
+
+                    int ind = (int) consume(TokenType.NUMBER).value;
+                    consume(TokenType.RBRACKET);
+
+                    return new AccessExpr(name, ind);
                 }
                 /* case COMMA -> {
                     ArrayList<VarExpr> arg = new ArrayList<>();
@@ -288,6 +298,15 @@ public class Parser {
             var = new FieldExpr(new VarExpr(name), new VarExpr(field));
         }
 
+        if (tok.type == TokenType.LBRACKET) {
+            consume(TokenType.LBRACKET);
+
+            int ind = (int) consume(TokenType.NUMBER).value;
+            consume(TokenType.RBRACKET);
+
+            var = new AccessExpr(name, ind);
+        }
+
         if (tok.type == TokenType.ASSIGN) {
             consume(TokenType.ASSIGN);
 
@@ -409,5 +428,17 @@ public class Parser {
         }
 
         return new InstanceStmt(new VarExpr(name), classConstructor, className);
+    }
+
+    private ImportStmt importL() {
+        consume(TokenType.IMPORT);
+
+        String path = consume(TokenType.STRING).string;
+
+        if (tok.type == TokenType.SEMICOLON) {
+            consume(TokenType.SEMICOLON);
+        }
+
+        return new ImportStmt(path);
     }
 }

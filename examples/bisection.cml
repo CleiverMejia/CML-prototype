@@ -18,7 +18,7 @@ function abs(n) {
     }
 }
 
-function bisection(a, b) {
+function bisection(a, b, func) {
     prevMean = 0;
     mean = 0;
     error = 1;
@@ -28,9 +28,9 @@ function bisection(a, b) {
         error = abs(prevMean - mean);
         prevMean = mean;
 
-        signMean = sign(f(mean));
-        signA = sign(f(a));
-        signB = sign(f(b));
+        signMean = sign(func(mean, b));
+        signA = sign(func(a, b));
+        signB = sign(func(b, b));
 
         if(signMean == signA) {
             a = mean;
@@ -45,9 +45,9 @@ function bisection(a, b) {
 }
 
 function sqrt2(n) {
-    function f(x) {
+    function f(x, n) {
         return (x*x) - n;
     }
 
-    return bisection(0, n);
+    return bisection(0, n, f);
 }

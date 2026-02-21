@@ -1,6 +1,7 @@
 package parser.expresions.operations;
 
 import interpreter.CallStack;
+import parser.expresions.AccessExpr;
 import parser.expresions.CallExpr;
 import parser.expresions.NumberExpr;
 import parser.expresions.StringExpr;
@@ -22,6 +23,14 @@ public class DivExpr implements Oper {
     public Expr get() {
         Expr leftTemp = left;
         Expr rightTemp = right;
+
+        // Array Access
+        if (leftTemp instanceof AccessExpr leftAccess) {
+            leftTemp = leftAccess.get();
+        }
+        if (rightTemp instanceof AccessExpr rightAccess) {
+            rightTemp = rightAccess.get();
+        }
 
         // calls
         if (leftTemp instanceof CallExpr leftCall) {

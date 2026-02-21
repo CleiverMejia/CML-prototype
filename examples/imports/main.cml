@@ -1,4 +1,4 @@
-import "calculator.cml";
+import "calculator";
 
 calc = new Calculator();
 result = calc.sum(2, 3);

@@ -1,6 +1,7 @@
 package lexer;
 
 import enums.TokenType;
+import interpreter.Interpreter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -8,34 +9,17 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.regex.Pattern;
 
 public class Lexer {
 
     private final Iterator<String> doc;
     private final ArrayList<Token> tokens = new ArrayList<>();
-    private final Pattern IMPORT = Pattern.compile("import \"(.*)\";?");
 
     public Lexer(String filePath) throws IOException {
-        String pathBase = Paths.get(filePath).getParent().toString();
-        String filePath2 = Paths.get(filePath).getFileName().toString();
+        Interpreter.sourcePath = Paths.get(filePath).getParent().toString();
+        List<String> lines = Files.readAllLines(Path.of(filePath));
 
-        doc = getFile(pathBase, filePath2).iterator();
-    }
-
-    private List<String> getFile(String pathBase, String filePath) throws IOException {
-        List<String> lines = Files.readAllLines(Path.of(String.format("%s/%s", pathBase, filePath)));
-
-        for (int i = 0; i < lines.size(); i++) {
-            if (IMPORT.matcher(lines.get(i).trim()).matches()) {
-                String sep[] = lines.get(i).split("\"");
-
-                lines.remove(i);
-                lines.addAll(i, getFile(pathBase, sep[1]));
-            }
-        }
-
-        return lines;
+        doc = lines.iterator();
     }
 
     public void run() {

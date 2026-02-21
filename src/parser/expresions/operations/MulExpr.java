@@ -1,6 +1,7 @@
 package parser.expresions.operations;
 
 import interpreter.CallStack;
+import parser.expresions.AccessExpr;
 import parser.expresions.BoolExpr;
 import parser.expresions.CallExpr;
 import parser.expresions.NumberExpr;
@@ -24,6 +25,14 @@ public class MulExpr implements Oper {
     public Expr get() {
         Expr leftTemp = this.left;
         Expr rightTemp = this.right;
+
+        // Array Access
+        if (leftTemp instanceof AccessExpr leftAccess) {
+            leftTemp = leftAccess.get();
+        }
+        if (rightTemp instanceof AccessExpr rightAccess) {
+            rightTemp = rightAccess.get();
+        }
 
         // calls
         if (leftTemp instanceof CallExpr leftCall) {

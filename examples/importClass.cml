@@ -1,0 +1,4 @@
+import "java/Sum";
+
+a = sum(3, 2);
+print(a);
